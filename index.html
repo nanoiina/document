@@ -1,1077 +1,1188 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ระบบจัดเก็บเอกสารราชการ</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script>
-tailwind.config = {
-  theme:{ extend:{
-    fontFamily:{ sans:['Sarabun','ui-sans-serif','system-ui'] },
-    colors:{
-      brand:{ DEFAULT:'#0C7C82', light:'#35B4B0', 50:'#EAF7F7', 100:'#D3EFEF', 200:'#A7DEDE', 600:'#0C7C82', 700:'#0A666B' },
-      mint:'#26A69A', lime:'#AED581', amber:'#FFCA28', coral:'#FF8A65',
-      rose:'#EF5350', grape:'#4A2C6D', ruby:'#D32F2F', orange:'#F57C00',
-      gold:'#FBC02D', ocean:'#0288D1'
-    },
-    boxShadow:{ soft:'0 10px 30px -12px rgba(12,124,130,.25)', card:'0 4px 20px -8px rgba(16,24,40,.12)' }
-  }}
-}
-</script>
-<style>
-  body{font-family:'Sarabun',sans-serif;background:#F6F9FA;-webkit-tap-highlight-color:transparent}
-  ::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:#cfe3e4;border-radius:99px}
-  .skel{background:linear-gradient(90deg,#eef2f3 25%,#e2e9ea 37%,#eef2f3 63%);background-size:400% 100%;animation:sk 1.3s ease infinite;border-radius:.75rem}
-  @keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
-  .fade-in{animation:fi .35s ease both}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-  .menu-active{background:linear-gradient(135deg,#0C7C82,#35B4B0);color:#fff;box-shadow:0 8px 20px -8px rgba(12,124,130,.6)}
-  .glass{backdrop-filter:blur(14px);background:rgba(255,255,255,.88)}
-  input[type=color]{-webkit-appearance:none;border:none;width:46px;height:38px;background:none;cursor:pointer}
-  input[type=color]::-webkit-color-swatch-wrapper{padding:0}
-  input[type=color]::-webkit-color-swatch{border:2px solid #fff;border-radius:10px;box-shadow:0 0 0 1px #d8e3e4}
-  .inp{width:100%;border:1px solid #e2e8ea;border-radius:.85rem;padding:.6rem .9rem;background:#fff;transition:.2s;font-size:.95rem}
-  .inp:focus{outline:none;border-color:#35B4B0;box-shadow:0 0 0 4px rgba(53,180,176,.15)}
-  .lbl{font-size:.85rem;font-weight:600;color:#475569;margin-bottom:.3rem;display:block}
-  .btn{border-radius:.85rem;padding:.6rem 1.1rem;font-weight:600;transition:.2s;display:inline-flex;align-items:center;gap:.5rem;font-size:.92rem}
-  .btn-p{background:linear-gradient(135deg,#0C7C82,#35B4B0);color:#fff}.btn-p:hover{filter:brightness(1.08)}
-  .btn-g{background:#fff;color:#0C7C82;border:1px solid #cfe3e4}.btn-g:hover{background:#EAF7F7}
-  .ico-btn{width:34px;height:34px;border-radius:.7rem;display:inline-flex;align-items:center;justify-content:center;transition:.2s}
-  .safe-b{padding-bottom:env(safe-area-inset-bottom)}
-  .swal2-popup{font-family:'Sarabun',sans-serif!important;border-radius:1.25rem!important}
-  table.tb th{font-size:.82rem;font-weight:700;color:#0C7C82;text-transform:none;white-space:nowrap}
-  .row-h:hover{background:#F2FAFA}
-  .dz-over{border-color:#35B4B0!important;background:#EAF7F7!important}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดเก็บเอกสารราชการ</title>
+    
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Sarabun', 'sans-serif'] },
+                    colors: {
+                        primary: '#0C7C82',
+                        secondary: '#35B4B0',
+                        accent1: '#26A69A',
+                        accent2: '#AED581',
+                        accent3: '#FFCA28',
+                        accent4: '#FF8A65',
+                        danger: '#EF5350',
+                        purple: '#4A2C6D',
+                        redDark: '#D32F2F',
+                        orange: '#F57C00',
+                        yellowDark: '#FBC02D',
+                        blueDark: '#0288D1',
+                        bglight: '#f8fafc'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- SheetJS for Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <style>
+        body { background-color: #f0fdfa; overflow-x: hidden; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #35B4B0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #0C7C82; }
+
+        /* Skeleton Loading */
+        .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #cbd5e1 50%, #e2e8f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 0.5rem; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* View toggles */
+        .grid-view-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+        .table-view-container { display: block; overflow-x: auto; }
+        
+        /* Drag & Drop */
+        .drop-zone { border: 2px dashed #35B4B0; transition: all 0.3s ease; }
+        .drop-zone.dragover { background-color: #e0f2fe; border-color: #0C7C82; }
+
+        /* Mobile Nav & Sidebar */
+        #mobile-nav { backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 -4px 20px rgba(0,0,0,0.05); }
+        .menu-item-active { background-color: #e0f2fe; color: #0C7C82; font-weight: 600; border-right: 4px solid #0C7C82; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body class="text-slate-700">
+<body class="text-gray-800 antialiased min-h-screen flex flex-col">
 
-<!-- ===================== GLOBAL SPINNER ===================== -->
-<div id="spin" class="fixed inset-0 z-[9999] hidden items-center justify-center bg-white/60 backdrop-blur-[2px]">
-  <div class="flex flex-col items-center gap-3">
-    <div class="w-12 h-12 rounded-full border-4 border-brand-100 border-t-brand animate-spin"></div>
-    <p class="text-sm font-semibold text-brand">กำลังดำเนินการ...</p>
-  </div>
-</div>
-
-<!-- ===================== LOGIN ===================== -->
-<div id="loginPage" class="min-h-screen hidden items-center justify-center p-4 md:p-8"
-     style="background:radial-gradient(1200px 600px at 10% 10%,#D3EFEF 0%,transparent 55%),radial-gradient(900px 500px at 90% 90%,#EAF7F7 0%,transparent 50%),#F6F9FA">
-  <div class="w-full max-w-4xl">
-    <div class="bg-white rounded-[2rem] shadow-soft overflow-hidden grid md:grid-cols-2 fade-in border border-white">
-      <!-- ซ้าย : แบรนด์ -->
-      <div class="p-8 md:p-10 text-white flex flex-col items-center justify-center text-center gap-4"
-           style="background:linear-gradient(145deg,#0C7C82 0%,#35B4B0 100%)">
-        <div class="w-28 h-28 rounded-3xl bg-white/15 ring-4 ring-white/25 flex items-center justify-center overflow-hidden shadow-lg">
-          <img id="loginLogo" class="w-full h-full object-contain p-2" alt="logo">
-        </div>
-        <h1 class="text-2xl md:text-[26px] font-extrabold leading-snug">ระบบจัดเก็บเอกสารราชการ</h1>
-        <div class="h-[3px] w-14 bg-white/50 rounded-full"></div>
-        <p id="loginSchool" class="text-lg font-bold"></p>
-        <p id="loginDept" class="text-sm text-white/85"></p>
-      </div>
-      <!-- ขวา : ฟอร์ม -->
-      <div class="p-8 md:p-10 flex flex-col justify-center">
-        <span class="inline-flex w-fit items-center gap-2 text-xs font-bold bg-brand-50 text-brand px-3 py-1.5 rounded-full mb-4">
-          <i class="fa-solid fa-shield-halved"></i> เข้าสู่ระบบ
-        </span>
-        <h2 class="text-2xl font-extrabold text-slate-800">ยินดีต้อนรับ</h2>
-        <p class="text-sm text-slate-400 mb-6">กรุณากรอกชื่อผู้ใช้และรหัสผ่านของท่าน</p>
-        <form id="loginForm" class="space-y-4">
-          <div>
-            <label class="lbl">ชื่อผู้ใช้ (Username)</label>
-            <div class="relative">
-              <i class="fa-solid fa-user absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-light"></i>
-              <input id="lgUser" class="inp pl-10" placeholder="username" autocomplete="username">
-            </div>
-          </div>
-          <div>
-            <label class="lbl">รหัสผ่าน (Password)</label>
-            <div class="relative">
-              <i class="fa-solid fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-light"></i>
-              <input id="lgPass" type="password" class="inp pl-10 pr-10" placeholder="••••••" autocomplete="current-password">
-              <button type="button" onclick="togglePw()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand">
-                <i id="pwEye" class="fa-solid fa-eye"></i></button>
-            </div>
-          </div>
-          <button class="btn btn-p w-full justify-center py-3 text-base shadow-soft"><i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบ</button>
-        </form>
-        <div class="mt-6 text-[12px] text-slate-400 bg-slate-50 rounded-xl p-3 leading-relaxed">
-          <b class="text-slate-500">บัญชีทดลอง :</b> admin / 1234 &nbsp;•&nbsp; teacher / 1234
-        </div>
-      </div>
+    <div id="global-loader" class="fixed inset-0 bg-white/80 backdrop-blur-sm z-[9999] hidden flex-col items-center justify-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
+        <h2 class="text-xl font-semibold text-primary animate-pulse">กำลังประมวลผล...</h2>
     </div>
-    <p id="loginFooter" class="text-center text-xs text-slate-400 mt-5"></p>
-  </div>
-</div>
 
-<!-- ===================== APP ===================== -->
-<div id="appPage" class="hidden">
-  <!-- overlay -->
-  <div id="ovl" class="fixed inset-0 bg-slate-900/40 z-40 hidden md:hidden" onclick="toggleSidebar(false)"></div>
-
-  <!-- SIDEBAR -->
-  <aside id="sidebar" class="fixed z-50 top-0 left-0 h-full w-[272px] bg-white border-r border-slate-100 flex flex-col
-         -translate-x-full md:translate-x-0 transition-transform duration-300">
-    <div class="p-5 text-white" style="background:linear-gradient(145deg,#0C7C82,#35B4B0)">
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-white/20 ring-2 ring-white/30 overflow-hidden flex items-center justify-center shrink-0">
-          <img id="sbLogo" class="w-full h-full object-contain p-1">
-        </div>
-        <div class="min-w-0">
-          <p class="font-extrabold leading-tight text-[15px]">ระบบจัดเก็บเอกสารราชการ</p>
-          <p id="sbSchool" class="text-[11px] text-white/80 truncate"></p>
-        </div>
-        <button class="md:hidden ml-auto w-8 h-8 rounded-lg bg-white/15" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
-      </div>
+    <div id="app" class="flex-grow flex flex-col h-screen">
+        <!-- Views will be injected here -->
     </div>
-    <nav id="navMenu" class="flex-1 overflow-y-auto p-3 space-y-1.5"></nav>
-    <div class="p-3 border-t border-slate-100">
-      <div class="flex items-center gap-3 p-2.5 rounded-2xl bg-brand-50/70">
-        <div id="sbAvatar" class="w-10 h-10 rounded-full text-white font-bold flex items-center justify-center shrink-0" style="background:linear-gradient(135deg,#0C7C82,#35B4B0)"></div>
-        <div class="min-w-0 flex-1">
-          <p id="sbName" class="text-sm font-bold text-slate-700 truncate"></p>
-          <p id="sbRole" class="text-[11px] text-brand font-semibold"></p>
-        </div>
-        <button onclick="doLogout()" class="ico-btn bg-white text-rose hover:bg-rose hover:text-white" title="ออกจากระบบ"><i class="fa-solid fa-power-off"></i></button>
-      </div>
-    </div>
-  </aside>
 
-  <!-- MAIN -->
-  <div class="md:ml-[272px] min-h-screen flex flex-col">
-    <header class="sticky top-0 z-30 glass border-b border-slate-100">
-      <div class="px-4 md:px-7 h-16 flex items-center gap-3">
-        <button class="md:hidden ico-btn bg-brand-50 text-brand" onclick="toggleSidebar(true)"><i class="fa-solid fa-bars-staggered"></i></button>
-        <div class="min-w-0">
-          <h2 id="pgTitle" class="font-extrabold text-slate-800 text-[17px] leading-tight truncate"></h2>
-          <p id="pgSub" class="text-[11px] text-slate-400 truncate"></p>
-        </div>
-        <div class="ml-auto flex items-center gap-2">
-          <span id="topBadge" class="hidden sm:inline-flex items-center gap-2 text-[12px] font-bold bg-brand-50 text-brand px-3 py-1.5 rounded-full"></span>
-          <button onclick="doLogout()" class="ico-btn bg-rose/10 text-rose hover:bg-rose hover:text-white"><i class="fa-solid fa-right-from-bracket"></i></button>
-        </div>
-      </div>
-    </header>
+    <script>
+        
+        // ** นำ URL Web App ของคุณมาใส่ที่นี่ หากเว้นว่างไว้ ระบบจะใช้ Local Storage ชั่วคราว **
+        const GAS_API_URL = ""; 
 
-    <main id="pageContent" class="flex-1 p-4 md:p-7 pb-32 md:pb-7"></main>
+        // Initial State
+        const state = {
+            currentUser: null,
+            currentView: 'login',
+            isMobile: window.innerWidth < 768,
+            sidebarOpen: false,
+            settings: { 
+                schoolName: "โรงเรียนตัวอย่าง", 
+                department: "สังกัดกระทรวงศึกษาธิการ", 
+                logo: "https://placehold.co/200x200/0C7C82/ffffff?text=LOGO" 
+            },
+            users: [
+                { id: '1', username: 'admin', password: 'admin1234', name: 'ผู้ดูแลระบบ สูงสุด', role: 'admin' },
+                { id: '2', username: 'teacher1', password: '1234', name: 'ครู สมชาย ใจดี', role: 'teacher' }
+            ],
+            years: [ { id: '1', year: '2567', color: '#0C7C82' }, { id: '2', year: '2566', color: '#4A2C6D' } ],
+            types: [ 
+                { id: '1', name: 'คำสั่ง', color: '#EF5350' }, 
+                { id: '2', name: 'ประกาศ', color: '#F57C00' },
+                { id: '3', name: 'หนังสือรับ', color: '#26A69A' }
+            ],
+            documents: [],
+            charts: {}
+        };
 
-    <footer class="border-t border-slate-100 bg-white px-4 md:px-7 py-5 mb-20 md:mb-0">
-      <p class="text-center text-[12.5px] text-slate-500">
-        <i class="fa-solid fa-folder-open text-brand-light mr-1"></i>
-        <b class="text-brand">ระบบจัดเก็บเอกสารราชการ</b> — <span id="ftSchool"></span>
-      </p>
-    </footer>
-  </div>
+        // Utility: Show Loading
+        const showLoading = () => document.getElementById('global-loader').classList.remove('hidden');
+        const hideLoading = () => document.getElementById('global-loader').classList.add('hidden');
 
-  <!-- MOBILE BOTTOM NAV -->
-  <div id="bottomNav" class="md:hidden fixed bottom-3 left-3 right-3 z-40 safe-b">
-    <div class="glass rounded-[26px] shadow-[0_14px_40px_-12px_rgba(12,124,130,.45)] border border-white/70 px-2 py-2 flex justify-around items-center"></div>
-  </div>
-</div>
+        // Check Local Storage for demo persistence
+        function loadMockData() {
+            const stored = localStorage.getItem('gov_doc_sys');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                state.settings = parsed.settings || state.settings;
+                state.users = parsed.users || state.users;
+                state.years = parsed.years || state.years;
+                state.types = parsed.types || state.types;
+                state.documents = parsed.documents || state.documents;
+            }
+        }
+        function saveMockData() {
+            localStorage.setItem('gov_doc_sys', JSON.stringify({
+                settings: state.settings, users: state.users, years: state.years, types: state.types, documents: state.documents
+            }));
+        }
 
-<!-- MODAL ROOT -->
-<div id="modalRoot"></div>
+        window.addEventListener('resize', () => { state.isMobile = window.innerWidth < 768; });
 
-<script>
-/* ============================================================
-   DATA LAYER
-============================================================ */
-const K={s:'dms_settings',u:'dms_users',y:'dms_years',t:'dms_types',d:'dms_docs',a:'dms_auth'};
-const store={
-  get(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v===null||v===undefined?f:v}catch(e){return f}},
-  set(k,v){localStorage.setItem(k,JSON.stringify(v))}
-};
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
-const PALETTE=['#0C7C82','#35B4B0','#26A69A','#AED581','#FFCA28','#FF8A65','#EF5350','#4A2C6D','#D32F2F','#F57C00','#FBC02D','#0288D1'];
-const DEF_LOGO='data:image/svg+xml;utf8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="#fff"/><path d="M60 22 78 40H42z" fill="#0C7C82"/><rect x="34" y="46" width="52" height="42" rx="8" fill="#35B4B0"/><rect x="44" y="58" width="32" height="6" rx="3" fill="#fff"/><rect x="44" y="70" width="22" height="6" rx="3" fill="#fff"/></svg>`);
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            showLoading();
+            setTimeout(() => { // Simulate API delay
+                const user = state.users.find(x => x.username === u && x.password === p);
+                if (user) {
+                    state.currentUser = user;
+                    Swal.fire({ icon: 'success', title: 'เข้าสู่ระบบสำเร็จ', text: `ยินดีต้อนรับ ${user.name}`, timer: 1500, showConfirmButton: false });
+                    navigate('dashboard');
+                } else {
+                    Swal.fire({ icon: 'error', title: 'ผิดพลาด', text: 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง' });
+                }
+                hideLoading();
+            }, 800);
+        }
 
-function seed(){
-  if(!localStorage.getItem(K.s)) store.set(K.s,{schoolName:'โรงเรียนบ้านตัวอย่างวิทยา',dept:'สำนักงานเขตพื้นที่การศึกษาประถมศึกษา เขต 1',logo:DEF_LOGO});
-  if(!localStorage.getItem(K.u)) store.set(K.u,[
-    {id:uid(),username:'admin',password:'1234',fullname:'นายผู้ดูแล ระบบงาน',role:'admin'},
-    {id:uid(),username:'teacher',password:'1234',fullname:'นางสาวครูสมศรี ใจดี',role:'teacher'},
-    {id:uid(),username:'teacher2',password:'1234',fullname:'นายครูสมชาย รักเรียน',role:'teacher'}
-  ]);
-  if(!localStorage.getItem(K.y)) store.set(K.y,[
-    {id:uid(),year:'2566',color:'#4A2C6D'},{id:uid(),year:'2567',color:'#0288D1'},{id:uid(),year:'2568',color:'#0C7C82'}
-  ]);
-  if(!localStorage.getItem(K.t)) store.set(K.t,[
-    {id:uid(),name:'หนังสือภายนอก',color:'#0C7C82'},{id:uid(),name:'หนังสือภายใน',color:'#35B4B0'},
-    {id:uid(),name:'คำสั่ง',color:'#FF8A65'},{id:uid(),name:'ประกาศ',color:'#FFCA28'},
-    {id:uid(),name:'ระเบียบ/ข้อบังคับ',color:'#0288D1'},{id:uid(),name:'บันทึกข้อความ',color:'#AED581'}
-  ]);
-  if(!localStorage.getItem(K.d)){
-    const T=store.get(K.t,[]),Y=store.get(K.y,[]),U=store.get(K.u,[]);
-    const sub=['ขอความอนุเคราะห์วิทยากร','แต่งตั้งคณะกรรมการดำเนินงาน','ประกาศรับสมัครนักเรียน','รายงานผลการดำเนินงานประจำปี','เชิญประชุมผู้บริหารสถานศึกษา','ขออนุมัติจัดซื้อจัดจ้าง','แนวปฏิบัติการจัดการเรียนการสอน','ขออนุญาตไปราชการ','การจัดสรรงบประมาณประจำปี','รายงานการประเมินตนเอง (SAR)','ขอเชิญเข้าร่วมอบรมเชิงปฏิบัติการ','มาตรการความปลอดภัยในสถานศึกษา'];
-    const ag=['สพฐ.','สพป. เขต 1','ศธจ.','เทศบาลตำบล','มหาวิทยาลัยราชภัฏ','สำนักงานสาธารณสุขอำเภอ'];
-    const docs=sub.map((s,i)=>({
-      id:uid(), docNo:`ศธ 04${(100+i)}/${(2500+i*7)}`, subject:s,
-      typeId:T[i%T.length].id, agency:ag[i%ag.length],
-      docDate:`202${4+(i%2)}-${String((i%12)+1).padStart(2,'0')}-${String((i%27)+1).padStart(2,'0')}`,
-      yearId:Y[i%Y.length].id, responsible:U[(i%2)+1].fullname, ownerId:U[(i%2)+1].id,
-      files:[], createdAt:Date.now()-i*86400000
-    }));
-    store.set(K.d,docs);
-  }
-}
-const DB={
-  settings:()=>store.get(K.s,{}), saveSettings:v=>store.set(K.s,v),
-  users:()=>store.get(K.u,[]),   saveUsers:v=>store.set(K.u,v),
-  years:()=>store.get(K.y,[]),   saveYears:v=>store.set(K.y,v),
-  types:()=>store.get(K.t,[]),   saveTypes:v=>store.set(K.t,v),
-  docs:()=>store.get(K.d,[]),    saveDocs:v=>store.set(K.d,v)
-};
+        function handleLogout() {
+            Swal.fire({
+                title: 'ออกจากระบบ?', text: "คุณต้องการออกจากระบบใช่หรือไม่?", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#0C7C82', cancelButtonColor: '#EF5350',
+                confirmButtonText: 'ใช่, ออกจากระบบ', cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    state.currentUser = null;
+                    navigate('login');
+                }
+            });
+        }
 
-/* ============================================================
-   HELPERS
-============================================================ */
-const $=s=>document.querySelector(s), $=s=>[...document.querySelectorAll(s)];
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const showLoad=()=>{$('#spin').classList.remove('hidden');$('#spin').classList.add('flex')};
-const hideLoad=()=>{$('#spin').classList.add('hidden');$('#spin').classList.remove('flex')};
-const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const toast=(icon,title)=>Swal.fire({toast:true,position:'top-end',icon,title,showConfirmButton:false,timer:2200,timerProgressBar:true});
-const thDate=d=>{ if(!d) return '-'; const x=new Date(d); if(isNaN(x)) return esc(d);
-  const m=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  return `${x.getDate()} ${m[x.getMonth()]} ${x.getFullYear()+543}`};
-const typeById=id=>DB.types().find(t=>t.id===id);
-const yearById=id=>DB.years().find(y=>y.id===id);
-const hex2rgba=(h,a)=>{const c=h.replace('#','');return `rgba(${parseInt(c.substr(0,2),16)},${parseInt(c.substr(2,2),16)},${parseInt(c.substr(4,2),16)},${a})`};
-const badge=(text,color)=>`<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11.5px] font-bold" style="background:${hex2rgba(color,.13)};color:${color}"><span class="w-1.5 h-1.5 rounded-full" style="background:${color}"></span>${esc(text)}</span>`;
-const fileSize=b=>b<1024?b+' B':b<1048576?(b/1024).toFixed(1)+' KB':(b/1048576).toFixed(1)+' MB';
-const skel=(n=4)=>`<div class="space-y-3">${Array.from({length:n}).map(()=>`<div class="skel h-20 w-full"></div>`).join('')}</div>`;
+        function navigate(view) {
+            state.currentView = view;
+            render();
+            if(state.isMobile && state.sidebarOpen) toggleSidebar();
+        }
 
-/* ============================================================
-   AUTH
-============================================================ */
-let ME=null;
-function togglePw(){const i=$('#lgPass');i.type=i.type==='password'?'text':'password';$('#pwEye').className=i.type==='password'?'fa-solid fa-eye':'fa-solid fa-eye-slash'}
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (state.currentView === 'login') {
+                app.innerHTML = renderLoginView();
+                return;
+            }
 
-function showLogin(){
-  const s=DB.settings();
-  $('#loginLogo').src=s.logo||DEF_LOGO;
-  $('#loginSchool').textContent=s.schoolName||'-';
-  $('#loginDept').textContent=s.dept||'-';
-  $('#loginFooter').textContent=`ระบบจัดเก็บเอกสารราชการ — ${s.schoolName||''}`;
-  $('#appPage').classList.add('hidden');
-  $('#loginPage').classList.remove('hidden');$('#loginPage').classList.add('flex');
-}
-$('#loginForm').addEventListener('submit',async e=>{
-  e.preventDefault();
-  const u=$('#lgUser').value.trim(), p=$('#lgPass').value;
-  if(!u||!p) return Swal.fire({icon:'warning',title:'ข้อมูลไม่ครบ',text:'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน',confirmButtonColor:'#0C7C82'});
-  showLoad(); await sleep(650); hideLoad();
-  const found=DB.users().find(x=>x.username===u&&x.password===p);
-  if(!found) return Swal.fire({icon:'error',title:'เข้าสู่ระบบไม่สำเร็จ',text:'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง',confirmButtonColor:'#0C7C82'});
-  store.set(K.a,found.id); ME=found;
-  toast('success',`ยินดีต้อนรับ ${found.fullname}`);
-  enterApp();
-});
-function doLogout(){
-  Swal.fire({title:'ออกจากระบบ?',text:'ต้องการออกจากระบบใช่หรือไม่',icon:'question',showCancelButton:true,
-    confirmButtonText:'ออกจากระบบ',cancelButtonText:'ยกเลิก',confirmButtonColor:'#EF5350',cancelButtonColor:'#94a3b8',reverseButtons:true})
-  .then(async r=>{ if(r.isConfirmed){ showLoad(); await sleep(500); hideLoad(); localStorage.removeItem(K.a); ME=null;
-    $('#lgUser').value='';$('#lgPass').value=''; showLogin(); toast('success','ออกจากระบบแล้ว'); }});
-}
+            // Authenticated Layout (Admin & Teacher)
+            app.innerHTML = `
+                <div class="flex h-screen bg-gray-50 overflow-hidden relative">
+                    <!-- Sidebar -->
+                    <aside id="sidebar" class="bg-white w-64 shadow-xl flex-shrink-0 absolute md:relative z-40 h-full transition-transform duration-300 transform ${state.isMobile ? '-translate-x-full' : 'translate-x-0'}">
+                        <div class="h-16 flex items-center justify-center border-b border-gray-100 bg-primary text-white">
+                            <i class="fas fa-folder-open text-2xl mr-2"></i>
+                            <span class="text-xl font-bold truncate">E-Document</span>
+                        </div>
+                        <div class="p-4 flex flex-col items-center border-b border-gray-100">
+                            <img src="${state.settings.logo}" class="w-16 h-16 rounded-full object-cover border-2 border-secondary shadow-md mb-2" onerror="this.src='https://placehold.co/150/0C7C82/FFF?text=LOGO'">
+                            <span class="text-sm font-semibold text-gray-700 text-center">${state.currentUser.name}</span>
+                            <span class="text-xs bg-secondary text-white px-2 py-1 rounded-full mt-1">${state.currentUser.role === 'admin' ? 'ผู้ดูแลระบบ' : 'ครู'}</span>
+                        </div>
+                        <nav class="p-2 space-y-1 overflow-y-auto h-[calc(100vh-12rem)]">
+                            ${getMenuItems()}
+                        </nav>
+                        <div class="absolute bottom-0 w-full p-4 border-t bg-gray-50 hidden md:block">
+                            <button onclick="handleLogout()" class="w-full flex items-center justify-center px-4 py-2 text-redDark bg-red-50 hover:bg-red-100 rounded-lg transition">
+                                <i class="fas fa-sign-out-alt mr-2"></i> ออกจากระบบ
+                            </button>
+                        </div>
+                    </aside>
 
-/* ============================================================
-   SHELL / MENU
-============================================================ */
-const MENUS={
-  admin:[
-    {k:'dash',  t:'แดชบอร์ด',        i:'fa-chart-pie',        c:'#0C7C82', sub:'ภาพรวมระบบจัดเก็บเอกสาร'},
-    {k:'docs',  t:'จัดการเอกสาร',     i:'fa-folder-open',      c:'#35B4B0', sub:'เพิ่ม แก้ไข ลบ ค้นหาเอกสาร'},
-    {k:'types', t:'ประเภทเอกสาร',     i:'fa-tags',             c:'#FF8A65', sub:'กำหนดประเภทและสีประจำประเภท'},
-    {k:'years', t:'ปีงบประมาณ',       i:'fa-calendar-days',    c:'#0288D1', sub:'กำหนดปีงบประมาณและสี'},
-    {k:'users', t:'จัดการผู้ใช้งาน',   i:'fa-users-gear',       c:'#4A2C6D', sub:'ผู้ดูแลระบบและครู'},
-    {k:'setting',t:'ตั้งค่าระบบ',      i:'fa-gear',             c:'#F57C00', sub:'ข้อมูลโรงเรียนและโลโก้'}
-  ],
-  teacher:[
-    {k:'dash',   t:'แดชบอร์ด',        i:'fa-chart-pie',        c:'#0C7C82', sub:'ภาพรวมเอกสารของโรงเรียน'},
-    {k:'docs',   t:'จัดการเอกสาร',     i:'fa-folder-open',      c:'#35B4B0', sub:'จัดการเอกสารของฉัน'},
-    {k:'types',  t:'ประเภทเอกสาร',     i:'fa-tags',             c:'#FF8A65', sub:'กำหนดประเภทเอกสาร'},
-    {k:'profile',t:'แก้ไขข้อมูลส่วนตัว',i:'fa-id-card',          c:'#4A2C6D', sub:'บัญชีผู้ใช้ของฉัน'}
-  ]
-};
-let PAGE='dash';
-function toggleSidebar(open){
-  $('#sidebar').classList.toggle('-translate-x-full',!open);
-  $('#ovl').classList.toggle('hidden',!open);
-}
-function enterApp(){
-  ME=DB.users().find(u=>u.id===store.get(K.a,null));
-  if(!ME) return showLogin();
-  const s=DB.settings();
-  $('#loginPage').classList.add('hidden');$('#loginPage').classList.remove('flex');
-  $('#appPage').classList.remove('hidden');
-  $('#sbLogo').src=s.logo||DEF_LOGO; $('#sbSchool').textContent=s.schoolName||''; $('#ftSchool').textContent=s.schoolName||'';
-  $('#sbName').textContent=ME.fullname; $('#sbRole').textContent=ME.role==='admin'?'ผู้ดูแลระบบ':'ครู';
-  $('#sbAvatar').textContent=(ME.fullname||'U').replace(/^(นาย|นาง|นางสาว)/,'').trim().charAt(0);
-  $('#topBadge').innerHTML=`<i class="fa-solid ${ME.role==='admin'?'fa-user-shield':'fa-chalkboard-user'}"></i> ${ME.role==='admin'?'ผู้ดูแลระบบ':'ครู'}`;
-  $('#topBadge').classList.remove('hidden');
-  buildMenu(); buildBottomNav(); go('dash');
-}
-function buildMenu(){
-  $('#navMenu').innerHTML=MENUS[ME.role].map(m=>`
-    <button data-k="${m.k}" onclick="go('${m.k}')" class="nav-i w-full flex items-center gap-3 px-3.5 py-3 rounded-2xl text-[14.5px] font-semibold text-slate-600 hover:bg-brand-50 transition">
-      <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ic" style="background:${hex2rgba(m.c,.14)};color:${m.c}"><i class="fa-solid ${m.i}"></i></span>
-      ${m.t}
-    </button>`).join('');
-}
-function buildBottomNav(){
-  const items=MENUS[ME.role].slice(0,4);
-  $('#bottomNav > div').innerHTML=items.map(m=>`
-    <button data-bk="${m.k}" onclick="go('${m.k}')" class="bn-i flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl transition">
-      <i class="fa-solid ${m.i} text-[17px]"></i><span class="text-[10px] font-bold">${m.t.replace('จัดการ','').replace('แก้ไขข้อมูล','')}</span>
-    </button>`).join('');
-}
-function go(k){
-  PAGE=k; toggleSidebar(false);
-  const m=MENUS[ME.role].find(x=>x.k===k)||MENUS[ME.role][0];
-  $('#pgTitle').textContent=m.t; $('#pgSub').textContent=m.sub;
-  $('.nav-i').forEach(b=>b.classList.toggle('menu-active',b.dataset.k===k));
-  $('.nav-i').forEach(b=>{const ic=b.querySelector('.ic'); ic.style.background=b.classList.contains('menu-active')?'rgba(255,255,255,.22)':hex2rgba(MENUS[ME.role].find(x=>x.k===b.dataset.k).c,.14); ic.style.color=b.classList.contains('menu-active')?'#fff':MENUS[ME.role].find(x=>x.k===b.dataset.k).c;});
-  $('.bn-i').forEach(b=>{const on=b.dataset.bk===k; b.className=`bn-i flex flex-col items-center gap-1 px-3 py-1.5 rounded-2xl transition ${on?'text-white':'text-slate-400'}`; b.style.background=on?'linear-gradient(135deg,#0C7C82,#35B4B0)':'transparent'});
-  window.scrollTo({top:0,behavior:'smooth'});
-  render(k);
-}
-async function render(k){
-  const c=$('#pageContent'); c.innerHTML=skel(4); await sleep(420);
-  ({dash:viewDash,docs:viewDocs,types:viewTypes,years:viewYears,users:viewUsers,setting:viewSetting,profile:viewProfile}[k]||viewDash)();
-  c.classList.remove('fade-in'); void c.offsetWidth; c.classList.add('fade-in');
-}
+                    <!-- Overlay for mobile sidebar -->
+                    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden" onclick="toggleSidebar()"></div>
 
-/* ============================================================
-   MODAL ENGINE
-============================================================ */
-function openModal(title,bodyHTML,footHTML,icon='fa-pen-to-square',color='#0C7C82',size='max-w-2xl'){
-  $('#modalRoot').innerHTML=`
-  <div class="fixed inset-0 z-[9000] flex items-end md:items-center justify-center p-0 md:p-4" id="mdWrap">
-    <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-[2px]" onclick="closeModal()"></div>
-    <div class="relative bg-white w-full ${size} rounded-t-[1.75rem] md:rounded-[1.75rem] shadow-2xl max-h-[92vh] flex flex-col fade-in">
-      <div class="flex items-center gap-3 p-5 border-b border-slate-100">
-        <span class="w-10 h-10 rounded-2xl flex items-center justify-center" style="background:${hex2rgba(color,.14)};color:${color}"><i class="fa-solid ${icon}"></i></span>
-        <h3 class="font-extrabold text-slate-800 text-[17px]">${title}</h3>
-        <button onclick="closeModal()" class="ml-auto ico-btn bg-slate-100 text-slate-500 hover:bg-rose hover:text-white"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="p-5 overflow-y-auto">${bodyHTML}</div>
-      ${footHTML?`<div class="p-4 border-t border-slate-100 flex gap-2 justify-end bg-slate-50/60 rounded-b-[1.75rem]">${footHTML}</div>`:''}
-    </div>
-  </div>`;
-  document.body.style.overflow='hidden';
-}
-function closeModal(){$('#modalRoot').innerHTML='';document.body.style.overflow=''}
-const confirmDelete=(text)=>Swal.fire({title:'ยืนยันการลบ?',text,icon:'warning',showCancelButton:true,confirmButtonText:'ลบข้อมูล',cancelButtonText:'ยกเลิก',confirmButtonColor:'#EF5350',cancelButtonColor:'#94a3b8',reverseButtons:true});
+                    <!-- Main Content -->
+                    <main class="flex-1 flex flex-col h-screen relative w-full overflow-hidden">
+                        <!-- Top Navbar (Desktop) -->
+                        <header class="bg-white shadow-sm h-16 flex items-center justify-between px-4 lg:px-8 z-10 shrink-0">
+                            <div class="flex items-center">
+                                <button onclick="toggleSidebar()" class="md:hidden text-gray-500 hover:text-primary mr-4 text-xl">
+                                    <i class="fas fa-bars"></i>
+                                </button>
+                                <div>
+                                    <h1 class="text-lg font-bold text-gray-800">${state.settings.schoolName}</h1>
+                                    <p class="text-xs text-gray-500 hidden sm:block">${state.settings.department}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <button class="text-gray-400 hover:text-primary relative"><i class="fas fa-bell text-xl"></i><span class="absolute top-0 right-0 h-2 w-2 bg-danger rounded-full"></span></button>
+                            </div>
+                        </header>
 
-/* ============================================================
-   DASHBOARD
-============================================================ */
-let CHARTS=[];
-function destroyCharts(){CHARTS.forEach(c=>{try{c.destroy()}catch(e){}});CHARTS=[]}
-function viewDash(){
-  destroyCharts();
-  const docs=DB.docs(), types=DB.types(), years=DB.years();
-  const total=docs.length||0;
-  const cnt=t=>docs.filter(d=>d.typeId===t.id).length;
-  const myDocs=docs.filter(d=>d.ownerId===ME.id).length;
-  const shortcuts=MENUS[ME.role].filter(m=>m.k!=='dash');
+                        <!-- Content Area -->
+                        <div class="flex-1 overflow-y-auto p-4 md:p-6 pb-24 md:pb-6 fade-in" id="main-content">
+                            ${renderCurrentPage()}
+                        </div>
+                        
+                        <!-- Footer -->
+                        <footer class="bg-white border-t py-3 text-center text-xs text-gray-500 hidden md:block shrink-0">
+                            ระบบจัดเก็บเอกสารราชการ © 2026 ${state.settings.schoolName}
+                        </footer>
+                    </main>
 
-  $('#pageContent').innerHTML=`
-  <!-- iOS style shortcut (mobile only) -->
-  <section class="md:hidden mb-5">
-    <p class="text-[12px] font-bold text-slate-400 mb-2.5 px-1">เมนูทางลัด</p>
-    <div class="grid grid-cols-4 gap-3">
-      ${shortcuts.map(m=>`
-      <button onclick="go('${m.k}')" class="flex flex-col items-center gap-1.5 active:scale-95 transition">
-        <span class="w-[58px] h-[58px] rounded-[18px] flex items-center justify-center text-white text-[21px] shadow-[0_8px_18px_-6px_rgba(0,0,0,.35)]"
-              style="background:linear-gradient(145deg,${m.c},${hex2rgba(m.c,.72)})"><i class="fa-solid ${m.i}"></i></span>
-        <span class="text-[10.5px] font-semibold text-slate-600 leading-tight text-center">${m.t.replace('จัดการ','')}</span>
-      </button>`).join('')}
-    </div>
-  </section>
+                    <!-- Mobile Bottom Nav -->
+                    ${state.isMobile ? renderMobileNav() : ''}
+                </div>
+                <!-- Modals Container -->
+                <div id="modal-container"></div>
+            `;
 
-  <!-- summary -->
-  <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-5">
-    <div class="col-span-2 lg:col-span-1 rounded-[1.5rem] p-5 text-white shadow-soft relative overflow-hidden" style="background:linear-gradient(145deg,#0C7C82,#35B4B0)">
-      <i class="fa-solid fa-folder-open absolute -right-3 -bottom-3 text-[86px] opacity-15"></i>
-      <p class="text-[12.5px] font-semibold text-white/85">เอกสารทั้งหมด</p>
-      <p class="text-[40px] font-extrabold leading-tight">${total}</p>
-      <p class="text-[11.5px] text-white/80">รายการในระบบ</p>
-    </div>
-    ${card('ประเภทเอกสาร',types.length,'fa-tags','#FF8A65')}
-    ${card('ปีงบประมาณ',years.length,'fa-calendar-days','#0288D1')}
-    ${ME.role==='admin'?card('ผู้ใช้งาน',DB.users().length,'fa-users','#4A2C6D'):card('เอกสารของฉัน',myDocs,'fa-user-pen','#4A2C6D')}
-  </section>
+            // Post Render Logic (Charts)
+            if (state.currentView === 'dashboard') initDashboardCharts();
+        }
 
-  <!-- per type cards + progress -->
-  <section class="mb-5">
-    <div class="flex items-center gap-2 mb-3">
-      <span class="w-1.5 h-5 rounded-full bg-brand"></span><h3 class="font-extrabold text-slate-800">จำนวนเอกสารแยกตามประเภท</h3>
-    </div>
-    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
-      ${types.map(t=>{const n=cnt(t),p=total?Math.round(n/total*100):0;return `
-        <div class="bg-white rounded-[1.25rem] p-4 shadow-card border border-slate-50">
-          <div class="flex items-center gap-2.5 mb-2">
-            <span class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:${hex2rgba(t.color,.14)};color:${t.color}"><i class="fa-solid fa-file-lines"></i></span>
-            <p class="text-[13px] font-bold text-slate-700 leading-tight line-clamp-2">${esc(t.name)}</p>
-          </div>
-          <div class="flex items-end justify-between mb-2">
-            <p class="text-[28px] font-extrabold leading-none" style="color:${t.color}">${n}</p>
-            <span class="text-[11px] font-bold px-2 py-0.5 rounded-full" style="background:${hex2rgba(t.color,.13)};color:${t.color}">${p}%</span>
-          </div>
-          <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
-            <div class="h-full rounded-full transition-all duration-700" style="width:${p}%;background:linear-gradient(90deg,${t.color},${hex2rgba(t.color,.6)})"></div>
-          </div>
-        </div>`}).join('')}
-    </div>
-  </section>
+        
+        function toggleSidebar() {
+            state.sidebarOpen = !state.sidebarOpen;
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (state.sidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
 
-  <!-- charts -->
-  <section class="grid lg:grid-cols-3 gap-4">
-    <div class="bg-white rounded-[1.5rem] p-5 shadow-card border border-slate-50">
-      <h3 class="font-extrabold text-slate-800 mb-1">สัดส่วนตามประเภท</h3>
-      <p class="text-[11.5px] text-slate-400 mb-3">Doughnut chart</p>
-      <div class="relative h-[260px]"><canvas id="c1"></canvas></div>
-    </div>
-    <div class="bg-white rounded-[1.5rem] p-5 shadow-card border border-slate-50">
-      <h3 class="font-extrabold text-slate-800 mb-1">เอกสารตามปีงบประมาณ</h3>
-      <p class="text-[11.5px] text-slate-400 mb-3">Bar chart</p>
-      <div class="relative h-[260px]"><canvas id="c2"></canvas></div>
-    </div>
-    <div class="bg-white rounded-[1.5rem] p-5 shadow-card border border-slate-50">
-      <h3 class="font-extrabold text-slate-800 mb-1">แนวโน้มรายเดือน</h3>
-      <p class="text-[11.5px] text-slate-400 mb-3">Line chart (ตามวันที่ออกเอกสาร)</p>
-      <div class="relative h-[260px]"><canvas id="c3"></canvas></div>
-    </div>
-  </section>
+        function getMenuItems() {
+            const role = state.currentUser.role;
+            let items = [
+                { id: 'dashboard', icon: 'fa-chart-pie', text: 'แดชบอร์ด', roles: ['admin', 'teacher'] },
+                { id: 'documents', icon: 'fa-file-alt', text: 'จัดการเอกสาร', roles: ['admin', 'teacher'] },
+                { id: 'doctypes', icon: 'fa-tags', text: 'จัดการประเภท', roles: ['admin', 'teacher'] }
+            ];
 
-  <!-- latest -->
-  <section class="mt-5 bg-white rounded-[1.5rem] p-5 shadow-card border border-slate-50">
-    <div class="flex items-center gap-2 mb-3">
-      <span class="w-1.5 h-5 rounded-full bg-brand-light"></span>
-      <h3 class="font-extrabold text-slate-800">เอกสารล่าสุด</h3>
-      <button onclick="go('docs')" class="ml-auto text-[12.5px] font-bold text-brand hover:underline">ดูทั้งหมด <i class="fa-solid fa-arrow-right text-[11px]"></i></button>
-    </div>
-    <div class="space-y-2">
-      ${docs.slice().sort((a,b)=>b.createdAt-a.createdAt).slice(0,5).map(d=>{const t=typeById(d.typeId);return `
-      <div class="flex items-center gap-3 p-3 rounded-2xl hover:bg-brand-50/60 transition cursor-pointer" onclick="docDetail('${d.id}')">
-        <span class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:${hex2rgba(t?.color||'#0C7C82',.14)};color:${t?.color||'#0C7C82'}"><i class="fa-solid fa-file-lines"></i></span>
-        <div class="min-w-0 flex-1">
-          <p class="text-[13.5px] font-bold text-slate-700 truncate">${esc(d.subject||'-')}</p>
-          <p class="text-[11.5px] text-slate-400 truncate">${esc(d.docNo||'-')} • ${thDate(d.docDate)}</p>
-        </div>
-        ${t?badge(t.name,t.color):''}
-      </div>`}).join('')||'<p class="text-center text-slate-400 py-6 text-sm">ยังไม่มีเอกสาร</p>'}
-    </div>
-  </section>`;
+            if (role === 'admin') {
+                items.push(
+                    { id: 'years', icon: 'fa-calendar-alt', text: 'ปีงบประมาณ', roles: ['admin'] },
+                    { id: 'users', icon: 'fa-users', text: 'จัดการผู้ใช้งาน', roles: ['admin'] },
+                    { id: 'settings', icon: 'fa-cogs', text: 'ตั้งค่าระบบ', roles: ['admin'] }
+                );
+            } else {
+                items.push({ id: 'profile', icon: 'fa-user-edit', text: 'ข้อมูลส่วนตัว', roles: ['teacher'] });
+            }
 
-  // charts
-  const opt={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Sarabun',size:11},boxWidth:12,usePointStyle:true,pointStyle:'circle'}}},
-    scales:{x:{ticks:{font:{family:'Sarabun',size:11}},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{family:'Sarabun',size:11},precision:0},grid:{color:'#eef2f3'}}}};
-  CHARTS.push(new Chart($('#c1'),{type:'doughnut',data:{labels:types.map(t=>t.name),datasets:[{data:types.map(cnt),backgroundColor:types.map(t=>t.color),borderWidth:3,borderColor:'#fff',hoverOffset:8}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{family:'Sarabun',size:11},boxWidth:10,usePointStyle:true,pointStyle:'circle',padding:12}}}}}));
-  CHARTS.push(new Chart($('#c2'),{type:'bar',data:{labels:years.map(y=>'ปี '+y.year),datasets:[{label:'จำนวนเอกสาร',data:years.map(y=>docs.filter(d=>d.yearId===y.id).length),backgroundColor:years.map(y=>hex2rgba(y.color,.85)),borderRadius:12,maxBarThickness:46}]},
-    options:{...opt,plugins:{legend:{display:false}}}}));
-  const mL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  const mD=mL.map((_,i)=>docs.filter(d=>d.docDate&&new Date(d.docDate).getMonth()===i).length);
-  CHARTS.push(new Chart($('#c3'),{type:'line',data:{labels:mL,datasets:[{label:'เอกสาร',data:mD,borderColor:'#0C7C82',backgroundColor:hex2rgba('#35B4B0',.18),fill:true,tension:.4,pointBackgroundColor:'#fff',pointBorderColor:'#0C7C82',pointBorderWidth:2,pointRadius:4}]},
-    options:{...opt,plugins:{legend:{display:false}}}}));
-}
-const card=(t,n,i,c)=>`
-  <div class="bg-white rounded-[1.5rem] p-4 md:p-5 shadow-card border border-slate-50">
-    <span class="w-10 h-10 rounded-2xl flex items-center justify-center mb-2" style="background:${hex2rgba(c,.14)};color:${c}"><i class="fa-solid ${i}"></i></span>
-    <p class="text-[12px] text-slate-400 font-semibold">${t}</p>
-    <p class="text-[28px] font-extrabold leading-tight" style="color:${c}">${n}</p>
-  </div>`;
+            return items.map(item => `
+                <a href="#" onclick="navigate('${item.id}'); return false;" 
+                   class="flex items-center px-4 py-3 rounded-lg transition-colors ${state.currentView === item.id ? 'menu-item-active' : 'text-gray-600 hover:bg-gray-50 hover:text-primary'}">
+                    <i class="fas ${item.icon} w-6"></i>
+                    <span>${item.text}</span>
+                </a>
+            `).join('');
+        }
 
-/* ============================================================
-   DOCUMENTS
-============================================================ */
-const DS={page:1,per:10,sort:{k:'createdAt',d:'desc'},view:window.innerWidth<768?'grid':'table',q:'',type:'',year:''};
-let TMP_FILES=[];
-const canEdit=d=>ME.role==='admin'||d.ownerId===ME.id;
+        function renderMobileNav() {
+            const isT = state.currentUser.role === 'teacher';
+            return `
+                <nav id="mobile-nav" class="fixed bottom-4 left-4 right-4 rounded-2xl md:hidden z-40 flex justify-around items-center py-2 px-1 border border-gray-200">
+                    <a href="#" onclick="navigate('dashboard'); return false;" class="flex flex-col items-center p-2 ${state.currentView === 'dashboard' ? 'text-primary' : 'text-gray-400'}">
+                        <i class="fas fa-home text-xl mb-1"></i><span class="text-[10px]">หน้าแรก</span>
+                    </a>
+                    <a href="#" onclick="navigate('documents'); return false;" class="flex flex-col items-center p-2 ${state.currentView === 'documents' ? 'text-primary' : 'text-gray-400'}">
+                        <i class="fas fa-file-alt text-xl mb-1"></i><span class="text-[10px]">เอกสาร</span>
+                    </a>
+                    <a href="#" onclick="navigate('doctypes'); return false;" class="flex flex-col items-center p-2 ${state.currentView === 'doctypes' ? 'text-primary' : 'text-gray-400'}">
+                        <i class="fas fa-tags text-xl mb-1"></i><span class="text-[10px]">ประเภท</span>
+                    </a>
+                    ${isT ? 
+                    `<a href="#" onclick="navigate('profile'); return false;" class="flex flex-col items-center p-2 ${state.currentView === 'profile' ? 'text-primary' : 'text-gray-400'}">
+                        <i class="fas fa-user text-xl mb-1"></i><span class="text-[10px]">โปรไฟล์</span>
+                    </a>` : 
+                    `<a href="#" onclick="navigate('settings'); return false;" class="flex flex-col items-center p-2 ${state.currentView === 'settings' ? 'text-primary' : 'text-gray-400'}">
+                        <i class="fas fa-cog text-xl mb-1"></i><span class="text-[10px]">ตั้งค่า</span>
+                    </a>`
+                    }
+                    <a href="#" onclick="handleLogout(); return false;" class="flex flex-col items-center p-2 text-red-400">
+                        <i class="fas fa-sign-out-alt text-xl mb-1"></i><span class="text-[10px]">ออก</span>
+                    </a>
+                </nav>
+            `;
+        }
 
-function docFiltered(){
-  let r=DB.docs();
-  if(DS.q){const q=DS.q.toLowerCase();
-    r=r.filter(d=>[d.docNo,d.subject,d.agency,d.responsible].some(v=>String(v||'').toLowerCase().includes(q)));}
-  if(DS.type) r=r.filter(d=>d.typeId===DS.type);
-  if(DS.year) r=r.filter(d=>d.yearId===DS.year);
-  const {k,d:dir}=DS.sort;
-  r.sort((a,b)=>{
-    let x,y;
-    if(k==='type'){x=typeById(a.typeId)?.name||'';y=typeById(b.typeId)?.name||''}
-    else if(k==='year'){x=yearById(a.yearId)?.year||'';y=yearById(b.yearId)?.year||''}
-    else {x=a[k]||'';y=b[k]||''}
-    return (x>y?1:x<y?-1:0)*(dir==='asc'?1:-1);
-  });
-  return r;
-}
-function viewDocs(){
-  const types=DB.types(), years=DB.years();
-  $('#pageContent').innerHTML=`
-  <div class="bg-white rounded-[1.5rem] p-4 md:p-5 shadow-card border border-slate-50 mb-4">
-    <div class="flex flex-wrap items-center gap-2.5">
-      <div class="relative flex-1 min-w-[190px]">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-brand-light text-[13px]"></i>
-        <input id="fq" value="${esc(DS.q)}" class="inp pl-9.5 pl-10" placeholder="ค้นหา เลขที่หนังสือ / เรื่อง / หน่วยงาน / ผู้รับผิดชอบ">
-      </div>
-      <select id="fType" class="inp w-auto min-w-[160px]"><option value="">ทุกประเภท</option>
-        ${types.map(t=>`<option value="${t.id}" ${DS.type===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}</select>
-      <select id="fYear" class="inp w-auto min-w-[150px]"><option value="">ทุกปีงบประมาณ</option>
-        ${years.map(y=>`<option value="${y.id}" ${DS.year===y.id?'selected':''}>ปี ${esc(y.year)}</option>`).join('')}</select>
-      <div class="flex items-center gap-1 bg-slate-100 rounded-xl p-1">
-        <button onclick="setView('table')" class="ico-btn ${DS.view==='table'?'bg-white text-brand shadow':'text-slate-400'}" title="มุมมองตาราง"><i class="fa-solid fa-table-list"></i></button>
-        <button onclick="setView('grid')" class="ico-btn ${DS.view==='grid'?'bg-white text-brand shadow':'text-slate-400'}" title="มุมมองการ์ด"><i class="fa-solid fa-grip"></i></button>
-      </div>
-      <button onclick="docForm()" class="btn btn-p shadow-soft"><i class="fa-solid fa-plus"></i> เพิ่มเอกสาร</button>
-    </div>
-  </div>
-  <div id="docWrap"></div>`;
-  ['fq','fType','fYear'].forEach(id=>{
-    const el=$('#'+id);
-    el.addEventListener(id==='fq'?'input':'change',()=>{DS.q=$('#fq').value;DS.type=$('#fType').value;DS.year=$('#fYear').value;DS.page=1;paintDocs()});
-  });
-  paintDocs();
-}
-function setView(v){DS.view=v;viewDocs()}
-function sortBy(k){DS.sort=DS.sort.k===k?{k,d:DS.sort.d==='asc'?'desc':'asc'}:{k,d:'asc'};paintDocs()}
-const sIco=k=>DS.sort.k===k?`<i class="fa-solid fa-sort-${DS.sort.d==='asc'?'up':'down'} ml-1 text-brand-light"></i>`:'<i class="fa-solid fa-sort ml-1 text-slate-300"></i>';
+        function renderLoginView() {
+            return `
+                <div class="min-h-screen flex items-center justify-center p-4" style="background: linear-gradient(135deg, #0C7C82 0%, #35B4B0 100%);">
+                    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl w-full flex flex-col md:flex-row fade-in">
+                        
+                        <!-- Info Panel -->
+                        <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col items-center justify-center bg-gray-50 border-b md:border-b-0 md:border-r border-gray-100">
+                            <img src="${state.settings.logo}" alt="Logo" class="w-32 h-32 object-contain mb-6 drop-shadow-md" onerror="this.src='https://placehold.co/200x200/0C7C82/ffffff?text=LOGO'">
+                            <h1 class="text-2xl font-bold text-primary text-center mb-2">ระบบจัดเก็บเอกสารราชการ</h1>
+                            <h2 class="text-lg text-gray-700 font-semibold text-center">${state.settings.schoolName}</h2>
+                            <p class="text-sm text-gray-500 mt-2 text-center">${state.settings.department}</p>
+                        </div>
 
-async function paintDocs(){
-  const w=$('#docWrap'); if(!w)return;
-  w.innerHTML=`<div class="bg-white rounded-[1.5rem] p-5 shadow-card">${skel(5)}</div>`;
-  await sleep(300);
-  const all=docFiltered(), tot=all.length, pages=Math.max(1,Math.ceil(tot/DS.per));
-  if(DS.page>pages)DS.page=pages;
-  const rows=all.slice((DS.page-1)*DS.per,DS.page*DS.per);
-  const empty=`<div class="py-16 text-center"><i class="fa-regular fa-folder-open text-5xl text-slate-200 mb-3"></i>
-      <p class="font-bold text-slate-400">ไม่พบข้อมูลเอกสาร</p><p class="text-[12.5px] text-slate-300">ลองเปลี่ยนคำค้นหรือเพิ่มเอกสารใหม่</p></div>`;
+                        <!-- Login Form -->
+                        <div class="w-full md:w-1/2 p-8 md:p-12 bg-white flex flex-col justify-center">
+                            <div class="mb-8">
+                                <h2 class="text-2xl font-bold text-gray-800">เข้าสู่ระบบ</h2>
+                                <p class="text-gray-500 text-sm mt-1">สำหรับผู้ดูแลระบบและครู</p>
+                            </div>
+                            <form onsubmit="handleLogin(event)" class="space-y-5">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อผู้ใช้งาน (Username)</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-user text-gray-400"></i>
+                                        </div>
+                                        <input type="text" id="username" required class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="กรอกชื่อผู้ใช้งาน">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">รหัสผ่าน (Password)</label>
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <i class="fas fa-lock text-gray-400"></i>
+                                        </div>
+                                        <input type="password" id="password" required class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="กรอกรหัสผ่าน">
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-primary hover:bg-[#095e63] text-white font-semibold py-3 rounded-lg shadow-md transition transform hover:-translate-y-0.5">
+                                    เข้าสู่ระบบ
+                                </button>
+                                <div class="text-center mt-4 text-xs text-gray-400">
+                                    <p>ทดสอบ: admin / admin1234</p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-  const actions=d=>`
-    <div class="flex items-center gap-1.5 justify-center">
-      <button onclick="event.stopPropagation();docDetail('${d.id}')" class="ico-btn bg-ocean/10 text-ocean hover:bg-ocean hover:text-white" title="รายละเอียด"><i class="fa-solid fa-eye"></i></button>
-      <button ${canEdit(d)?`onclick="event.stopPropagation();docForm('${d.id}')"`:'disabled'} class="ico-btn ${canEdit(d)?'bg-amber/15 text-orange hover:bg-orange hover:text-white':'bg-slate-100 text-slate-300 cursor-not-allowed'}" title="${canEdit(d)?'แก้ไข':'แก้ไขได้เฉพาะเอกสารของตนเอง'}"><i class="fa-solid fa-pen"></i></button>
-      <button ${canEdit(d)?`onclick="event.stopPropagation();docDel('${d.id}')"`:'disabled'} class="ico-btn ${canEdit(d)?'bg-rose/10 text-rose hover:bg-rose hover:text-white':'bg-slate-100 text-slate-300 cursor-not-allowed'}" title="${canEdit(d)?'ลบ':'ลบได้เฉพาะเอกสารของตนเอง'}"><i class="fa-solid fa-trash"></i></button>
-    </div>`;
+        function renderCurrentPage() {
+            switch(state.currentView) {
+                case 'dashboard': return renderDashboard();
+                case 'settings': return renderSettings();
+                case 'users': return renderUsers();
+                case 'years': return renderYears();
+                case 'doctypes': return renderDocTypes();
+                case 'documents': return renderDocuments();
+                case 'profile': return renderProfile();
+                default: return renderDashboard();
+            }
+        }
 
-  const table=`
-  <div class="bg-white rounded-[1.5rem] shadow-card border border-slate-50 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="tb w-full min-w-[760px]">
-        <thead class="bg-brand-50/70"><tr>
-          <th class="px-4 py-3.5 text-left cursor-pointer select-none" onclick="sortBy('docNo')">เลขที่หนังสือ ${sIco('docNo')}</th>
-          <th class="px-4 py-3.5 text-left cursor-pointer select-none" onclick="sortBy('subject')">เรื่อง ${sIco('subject')}</th>
-          <th class="px-4 py-3.5 text-left cursor-pointer select-none" onclick="sortBy('type')">ประเภท ${sIco('type')}</th>
-          <th class="px-4 py-3.5 text-left cursor-pointer select-none" onclick="sortBy('year')">ปีงบประมาณ ${sIco('year')}</th>
-          <th class="px-4 py-3.5 text-center w-[140px]">จัดการ</th>
-        </tr></thead>
-        <tbody class="divide-y divide-slate-50">
-          ${rows.map(d=>{const t=typeById(d.typeId),y=yearById(d.yearId);return `
-          <tr class="row-h transition cursor-pointer" onclick="docDetail('${d.id}')">
-            <td class="px-4 py-3.5"><span class="font-mono text-[12.5px] font-semibold text-slate-600 whitespace-pre-wrap break-words">${esc(d.docNo||'-')}</span></td>
-            <td class="px-4 py-3.5">
-              <p class="text-[13.5px] font-bold text-slate-700 line-clamp-1">${esc(d.subject||'-')}</p>
-              <p class="text-[11px] text-slate-400"><i class="fa-regular fa-building mr-1"></i>${esc(d.agency||'-')} • ${thDate(d.docDate)}
-              ${d.files?.length?`<span class="ml-1 text-brand"><i class="fa-solid fa-paperclip"></i> ${d.files.length}</span>`:''}</p>
-            </td>
-            <td class="px-4 py-3.5">${t?badge(t.name,t.color):'<span class="text-slate-300">-</span>'}</td>
-            <td class="px-4 py-3.5">${y?badge('ปี '+y.year,y.color):'<span class="text-slate-300">-</span>'}</td>
-            <td class="px-4 py-3.5">${actions(d)}</td>
-          </tr>`}).join('')||`<tr><td colspan="5">${empty}</td></tr>`}
-        </tbody>
-      </table>
-    </div>
-    ${pager(tot,pages)}
-  </div>`;
+        function renderDashboard() {
+            const totalDocs = state.documents.length;
+            
+            // Calculate type counts
+            const typeCounts = state.types.map(t => {
+                const count = state.documents.filter(d => d.typeId === t.id).length;
+                const percent = totalDocs === 0 ? 0 : Math.round((count / totalDocs) * 100);
+                return { ...t, count, percent };
+            });
 
-  const grid=`
-  <div>
-    <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-      ${rows.map(d=>{const t=typeById(d.typeId),y=yearById(d.yearId);return `
-      <div onclick="docDetail('${d.id}')" class="bg-white rounded-[1.4rem] p-4 shadow-card border border-slate-50 hover:shadow-soft transition cursor-pointer">
-        <div class="flex items-start gap-3 mb-3">
-          <span class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0" style="background:${hex2rgba(t?.color||'#0C7C82',.14)};color:${t?.color||'#0C7C82'}"><i class="fa-solid fa-file-lines text-[17px]"></i></span>
-          <div class="min-w-0 flex-1">
-            <p class="text-[14px] font-extrabold text-slate-700 line-clamp-2 leading-snug">${esc(d.subject||'-')}</p>
-            <p class="font-mono text-[11.5px] text-slate-400 mt-0.5 break-words">${esc(d.docNo||'-')}</p>
-          </div>
-        </div>
-        <div class="flex flex-wrap gap-1.5 mb-3">${t?badge(t.name,t.color):''}${y?badge('ปี '+y.year,y.color):''}
-          ${d.files?.length?badge(d.files.length+' ไฟล์','#4A2C6D'):''}</div>
-        <div class="text-[11.5px] text-slate-400 space-y-0.5 mb-3">
-          <p><i class="fa-regular fa-building w-4"></i> ${esc(d.agency||'-')}</p>
-          <p><i class="fa-regular fa-calendar w-4"></i> ${thDate(d.docDate)}</p>
-          <p><i class="fa-regular fa-user w-4"></i> ${esc(d.responsible||'-')}</p>
-        </div>
-        <div class="pt-3 border-t border-slate-50">${actions(d)}</div>
-      </div>`}).join('')||`<div class="sm:col-span-2 xl:col-span-3 bg-white rounded-[1.5rem] shadow-card">${empty}</div>`}
-    </div>
-    <div class="bg-white rounded-[1.5rem] shadow-card border border-slate-50 mt-3">${pager(tot,pages)}</div>
-  </div>`;
-  w.innerHTML=DS.view==='table'?table:grid;
-}
-function pager(tot,pages){
-  const btn=(p,l,dis,act)=>`<button ${dis?'disabled':`onclick="gotoPage(${p})"`} class="min-w-[36px] h-9 px-3 rounded-xl text-[13px] font-bold transition ${act?'text-white shadow-soft':dis?'text-slate-300 bg-slate-50':'text-slate-500 bg-white border border-slate-100 hover:bg-brand-50'}" ${act?'style="background:linear-gradient(135deg,#0C7C82,#35B4B0)"':''}>${l}</button>`;
-  let nums='';const s=Math.max(1,DS.page-2),e=Math.min(pages,s+4);
-  for(let i=s;i<=e;i++) nums+=btn(i,i,false,i===DS.page);
-  return `<div class="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5 border-t border-slate-50">
-    <p class="text-[12.5px] text-slate-400">แสดง <b class="text-slate-600">${tot?((DS.page-1)*DS.per+1):0}-${Math.min(DS.page*DS.per,tot)}</b> จาก <b class="text-brand">${tot}</b> รายการ</p>
-    <div class="flex items-center gap-1.5">
-      ${btn(DS.page-1,'<i class="fa-solid fa-chevron-left text-[11px]"></i>',DS.page<=1)}${nums}${btn(DS.page+1,'<i class="fa-solid fa-chevron-right text-[11px]"></i>',DS.page>=pages)}
-      <select onchange="DS.per=+this.value;DS.page=1;paintDocs()" class="inp w-auto py-1.5 text-[12.5px] ml-1">
-        ${[5,10,20,50].map(n=>`<option value="${n}" ${DS.per===n?'selected':''}>${n}/หน้า</option>`).join('')}
-      </select>
-    </div></div>`;
-}
-function gotoPage(p){DS.page=p;paintDocs()}
+            // Mobile Shortcuts (iPhone style)
+            const mobileShortcuts = state.isMobile ? `
+                <div class="mb-6 block md:hidden">
+                    <h3 class="text-sm font-semibold text-gray-500 mb-3 ml-1">เมนูทางลัด</h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <button onclick="navigate('documents')" class="flex flex-col items-center focus:outline-none">
+                            <div class="w-14 h-14 bg-gradient-to-br from-blue-400 to-blueDark rounded-2xl shadow-sm flex items-center justify-center text-white mb-1"><i class="fas fa-file-alt text-2xl"></i></div>
+                            <span class="text-[11px] text-gray-700 font-medium">เอกสาร</span>
+                        </button>
+                        <button onclick="navigate('doctypes')" class="flex flex-col items-center focus:outline-none">
+                            <div class="w-14 h-14 bg-gradient-to-br from-orange-400 to-orange rounded-2xl shadow-sm flex items-center justify-center text-white mb-1"><i class="fas fa-tags text-2xl"></i></div>
+                            <span class="text-[11px] text-gray-700 font-medium">ประเภท</span>
+                        </button>
+                        ${state.currentUser.role === 'admin' ? `
+                        <button onclick="navigate('users')" class="flex flex-col items-center focus:outline-none">
+                            <div class="w-14 h-14 bg-gradient-to-br from-purple-400 to-purple rounded-2xl shadow-sm flex items-center justify-center text-white mb-1"><i class="fas fa-users text-2xl"></i></div>
+                            <span class="text-[11px] text-gray-700 font-medium">ผู้ใช้</span>
+                        </button>
+                        <button onclick="navigate('settings')" class="flex flex-col items-center focus:outline-none">
+                            <div class="w-14 h-14 bg-gradient-to-br from-gray-400 to-gray-600 rounded-2xl shadow-sm flex items-center justify-center text-white mb-1"><i class="fas fa-cog text-2xl"></i></div>
+                            <span class="text-[11px] text-gray-700 font-medium">ตั้งค่า</span>
+                        </button>
+                        ` : `
+                         <button onclick="navigate('profile')" class="flex flex-col items-center focus:outline-none">
+                            <div class="w-14 h-14 bg-gradient-to-br from-teal-400 to-primary rounded-2xl shadow-sm flex items-center justify-center text-white mb-1"><i class="fas fa-user-edit text-2xl"></i></div>
+                            <span class="text-[11px] text-gray-700 font-medium">โปรไฟล์</span>
+                        </button>
+                        `}
+                    </div>
+                </div>
+            ` : '';
 
-/* ---------- document form ---------- */
-function docForm(id){
-  const d=id?DB.docs().find(x=>x.id===id):null;
-  if(d&&!canEdit(d)) return toast('error','แก้ไขได้เฉพาะเอกสารของตนเอง');
-  TMP_FILES=d?JSON.parse(JSON.stringify(d.files||[])):[];
-  const T=DB.types(),Y=DB.years();
-  openModal(id?'แก้ไขเอกสาร':'เพิ่มเอกสารใหม่',`
-    <form id="docF" class="space-y-4">
-      <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="lbl">เลขที่หนังสือ</label><input id="f_no" class="inp font-mono" value="${esc(d?.docNo||'')}" placeholder="เช่น ศธ 04123/456"></div>
-        <div><label class="lbl">วันที่ออกเอกสาร</label><input id="f_date" type="date" class="inp" value="${d?.docDate||''}"></div>
-      </div>
-      <div><label class="lbl">เรื่อง</label><input id="f_sub" class="inp" value="${esc(d?.subject||'')}" placeholder="ชื่อเรื่องของเอกสาร"></div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="lbl">ประเภทเอกสาร</label><select id="f_type" class="inp"><option value="">-- เลือกประเภท --</option>
-          ${T.map(t=>`<option value="${t.id}" ${d?.typeId===t.id?'selected':''}>${esc(t.name)}</option>`).join('')}</select></div>
-        <div><label class="lbl">ปีงบประมาณ</label><select id="f_year" class="inp"><option value="">-- เลือกปีงบประมาณ --</option>
-          ${Y.map(y=>`<option value="${y.id}" ${d?.yearId===y.id?'selected':''}>ปี ${esc(y.year)}</option>`).join('')}</select></div>
-      </div>
-      <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="lbl">หน่วยงานต้นเรื่อง</label><input id="f_ag" class="inp" value="${esc(d?.agency||'')}" placeholder="เช่น สพป. เขต 1"></div>
-        <div><label class="lbl">ผู้รับผิดชอบ</label><input id="f_res" class="inp" value="${esc(d?.responsible||ME.fullname)}"></div>
-      </div>
-      <div>
-        <label class="lbl">ไฟล์แนบ <span class="text-slate-300 font-normal">(ลากวางไฟล์ได้ / หลายไฟล์)</span></label>
-        <div id="dz" class="border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center bg-slate-50/60 cursor-pointer transition">
-          <i class="fa-solid fa-cloud-arrow-up text-3xl text-brand-light mb-2"></i>
-          <p class="text-[13.5px] font-bold text-slate-600">คลิกเพื่อเลือกไฟล์ หรือลากไฟล์มาวางที่นี่</p>
-          <p class="text-[11.5px] text-slate-400">รองรับ PDF, Word, Excel, รูปภาพ</p>
-          <input id="f_file" type="file" multiple class="hidden">
-        </div>
-        <div id="prev" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3"></div>
-      </div>
-      <p class="text-[11.5px] text-slate-400"><i class="fa-solid fa-circle-info mr-1 text-brand-light"></i>ทุกช่องไม่บังคับกรอก</p>
-    </form>`,
-    `<button onclick="closeModal()" class="btn btn-g">ยกเลิก</button>
-     <button onclick="docSave('${id||''}')" class="btn btn-p"><i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูล</button>`,
-    id?'fa-pen-to-square':'fa-file-circle-plus','#0C7C82','max-w-3xl');
+            // Type Cards
+            const typeCardsHTML = typeCounts.map(t => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-sm font-semibold text-gray-600">${t.name}</h4>
+                        <span class="text-lg font-bold" style="color: ${t.color}">${t.count}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="h-2.5 rounded-full" style="width: ${t.percent}%; background-color: ${t.color}"></div>
+                    </div>
+                    <p class="text-xs text-right mt-1 text-gray-400">${t.percent}% ของทั้งหมด</p>
+                </div>
+            `).join('');
 
-  const dz=$('#dz'),fi=$('#f_file');
-  dz.onclick=()=>fi.click();
-  ['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('dz-over')}));
-  ['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('dz-over')}));
-  dz.addEventListener('drop',ev=>addFiles(ev.dataTransfer.files));
-  fi.onchange=e=>addFiles(e.target.files);
-  paintPrev();
-}
-function addFiles(list){
-  [...list].forEach(f=>{
-    const r=new FileReader();
-    r.onload=()=>{TMP_FILES.push({name:f.name,type:f.type,size:f.size,data:r.result});paintPrev()};
-    r.readAsDataURL(f);
-  });
-}
-function rmFile(i){TMP_FILES.splice(i,1);paintPrev()}
-function fIcon(t){return t?.startsWith('image')?'fa-file-image':t?.includes('pdf')?'fa-file-pdf':t?.includes('sheet')||t?.includes('excel')?'fa-file-excel':t?.includes('word')?'fa-file-word':'fa-file'}
-function paintPrev(){
-  const p=$('#prev'); if(!p)return;
-  p.innerHTML=TMP_FILES.map((f,i)=>`
-    <div class="relative rounded-2xl border border-slate-100 bg-white p-2 flex items-center gap-2 overflow-hidden">
-      ${f.type?.startsWith('image')?`<img src="${f.data}" class="w-11 h-11 rounded-xl object-cover shrink-0">`
-        :`<span class="w-11 h-11 rounded-xl bg-brand-50 text-brand flex items-center justify-center shrink-0"><i class="fa-solid ${fIcon(f.type)}"></i></span>`}
-      <div class="min-w-0"><p class="text-[11.5px] font-bold text-slate-600 truncate">${esc(f.name)}</p><p class="text-[10.5px] text-slate-400">${fileSize(f.size)}</p></div>
-      <button type="button" onclick="rmFile(${i})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose text-white text-[10px]"><i class="fa-solid fa-xmark"></i></button>
-    </div>`).join('');
-}
-async function docSave(id){
-  showLoad(); await sleep(600);
-  const docs=DB.docs();
-  const obj={docNo:$('#f_no').value.trim(),subject:$('#f_sub').value.trim(),typeId:$('#f_type').value,
-    agency:$('#f_ag').value.trim(),docDate:$('#f_date').value,yearId:$('#f_year').value,
-    responsible:$('#f_res').value.trim(),files:TMP_FILES};
-  if(id){const i=docs.findIndex(x=>x.id===id);docs[i]={...docs[i],...obj}}
-  else docs.unshift({id:uid(),...obj,ownerId:ME.id,createdAt:Date.now()});
-  DB.saveDocs(docs); hideLoad(); closeModal(); toast('success',id?'แก้ไขเอกสารเรียบร้อย':'เพิ่มเอกสารเรียบร้อย'); paintDocs();
-}
-function docDel(id){
-  const d=DB.docs().find(x=>x.id===id);
-  if(!canEdit(d)) return toast('error','ลบได้เฉพาะเอกสารของตนเอง');
-  confirmDelete(`ต้องการลบเอกสาร "${d.subject||d.docNo||''}" ใช่หรือไม่`).then(async r=>{
-    if(!r.isConfirmed)return; showLoad(); await sleep(500);
-    DB.saveDocs(DB.docs().filter(x=>x.id!==id)); hideLoad(); toast('success','ลบข้อมูลเรียบร้อย'); paintDocs();
-  });
-}
-function docDetail(id){
-  const d=DB.docs().find(x=>x.id===id); if(!d)return;
-  const t=typeById(d.typeId),y=yearById(d.yearId);
-  const row=(ic,l,v)=>`<div class="flex gap-3 py-2.5 border-b border-slate-50 last:border-0">
-    <span class="w-8 h-8 rounded-xl bg-brand-50 text-brand flex items-center justify-center shrink-0"><i class="fa-solid ${ic} text-[12px]"></i></span>
-    <div class="min-w-0"><p class="text-[11.5px] text-slate-400 font-semibold">${l}</p><div class="text-[14px] font-bold text-slate-700 break-words whitespace-pre-wrap">${v}</div></div></div>`;
-  openModal('รายละเอียดเอกสาร',`
-    <div class="rounded-2xl p-4 mb-3 text-white" style="background:linear-gradient(135deg,${t?.color||'#0C7C82'},${hex2rgba(t?.color||'#35B4B0',.72)})">
-      <p class="text-[12px] text-white/80 font-mono">${esc(d.docNo||'-')}</p>
-      <p class="text-[17px] font-extrabold leading-snug">${esc(d.subject||'-')}</p>
-    </div>
-    ${row('fa-hashtag','เลขที่หนังสือ',`<span class="font-mono">${esc(d.docNo||'-')}</span>`)}
-    ${row('fa-file-lines','เรื่อง',esc(d.subject||'-'))}
-    ${row('fa-tag','ประเภทเอกสาร',t?badge(t.name,t.color):'-')}
-    ${row('fa-building','หน่วยงานต้นเรื่อง',esc(d.agency||'-'))}
-    ${row('fa-calendar','วันที่ออกเอกสาร',thDate(d.docDate))}
-    ${row('fa-calendar-days','ปีงบประมาณ',y?badge('ปี '+y.year,y.color):'-')}
-    ${row('fa-user','ผู้รับผิดชอบ',esc(d.responsible||'-'))}
-    ${row('fa-paperclip','ไฟล์แนบ',(d.files?.length?`<div class="grid sm:grid-cols-2 gap-2 mt-1">${d.files.map(f=>`
-      <a href="${f.data}" download="${esc(f.name)}" class="flex items-center gap-2 p-2 rounded-xl border border-slate-100 hover:bg-brand-50 transition">
-        ${f.type?.startsWith('image')?`<img src="${f.data}" class="w-10 h-10 rounded-lg object-cover">`:`<span class="w-10 h-10 rounded-lg bg-brand-50 text-brand flex items-center justify-center"><i class="fa-solid ${fIcon(f.type)}"></i></span>`}
-        <span class="min-w-0"><span class="block text-[11.5px] font-bold text-slate-600 truncate">${esc(f.name)}</span>
-        <span class="block text-[10.5px] text-slate-400">${fileSize(f.size)} • ดาวน์โหลด</span></span></a>`).join('')}</div>`:'<span class="text-slate-300 font-normal">ไม่มีไฟล์แนบ</span>'))}
-  `,`<button onclick="closeModal()" class="btn btn-g">ปิด</button>
-     ${canEdit(d)?`<button onclick="closeModal();docForm('${d.id}')" class="btn btn-p"><i class="fa-solid fa-pen"></i> แก้ไข</button>`:''}`,
-    'fa-circle-info','#0288D1','max-w-2xl');
-}
+            return `
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">แดชบอร์ดสรุปผล</h2>
+                    <p class="text-sm text-gray-500">ภาพรวมเอกสารในระบบ</p>
+                </div>
+                
+                ${mobileShortcuts}
 
-/* ============================================================
-   TYPES
-============================================================ */
-function viewTypes(){
-  const T=DB.types(),docs=DB.docs();
-  $('#pageContent').innerHTML=`
-  <div class="flex items-center gap-2 mb-4">
-    <span class="text-[13px] text-slate-400">ทั้งหมด <b class="text-brand">${T.length}</b> ประเภท</span>
-    <button onclick="typeForm()" class="btn btn-p ml-auto shadow-soft"><i class="fa-solid fa-plus"></i> เพิ่มประเภทเอกสาร</button>
-  </div>
-  <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">
-    ${T.map(t=>`
-    <div class="bg-white rounded-[1.4rem] p-4 shadow-card border border-slate-50 flex items-center gap-3">
-      <span class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style="background:${hex2rgba(t.color,.15)};color:${t.color}"><i class="fa-solid fa-tag text-[17px]"></i></span>
-      <div class="min-w-0 flex-1">
-        <p class="font-extrabold text-slate-700 text-[14.5px] truncate">${esc(t.name)}</p>
-        <p class="text-[11.5px] text-slate-400">${docs.filter(d=>d.typeId===t.id).length} เอกสาร ${ME.role==='admin'?`• <span class="font-mono">${t.color}</span>`:''}</p>
-      </div>
-      <div class="flex gap-1.5">
-        <button onclick="typeForm('${t.id}')" class="ico-btn bg-amber/15 text-orange hover:bg-orange hover:text-white"><i class="fa-solid fa-pen"></i></button>
-        <button onclick="typeDel('${t.id}')" class="ico-btn bg-rose/10 text-rose hover:bg-rose hover:text-white"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    </div>`).join('')||'<p class="text-slate-400">ยังไม่มีประเภทเอกสาร</p>'}
-  </div>`;
-}
-function typeForm(id){
-  const t=id?DB.types().find(x=>x.id===id):null;
-  const color=t?.color||PALETTE[DB.types().length%PALETTE.length];
-  openModal(id?'แก้ไขประเภทเอกสาร':'เพิ่มประเภทเอกสาร',`
-    <div class="space-y-4">
-      <div><label class="lbl">ชื่อประเภทเอกสาร</label><input id="t_name" class="inp" value="${esc(t?.name||'')}" placeholder="เช่น หนังสือภายนอก"></div>
-      ${ME.role==='admin'?`
-      <div><label class="lbl">สีประจำประเภท</label>
-        <div class="flex items-center gap-3">
-          <input id="t_color" type="color" value="${color}">
-          <input id="t_hex" class="inp font-mono w-32" value="${color}">
-          <div class="flex flex-wrap gap-1.5">${PALETTE.map(c=>`<button onclick="pickColor('t',('${c}'))" class="w-6 h-6 rounded-lg ring-1 ring-black/5" style="background:${c}"></button>`).join('')}</div>
-        </div></div>`:`<input type="hidden" id="t_color" value="${color}"><input type="hidden" id="t_hex" value="${color}">`}
-    </div>`,
-    `<button onclick="closeModal()" class="btn btn-g">ยกเลิก</button>
-     <button onclick="typeSave('${id||''}')" class="btn btn-p"><i class="fa-solid fa-floppy-disk"></i> บันทึก</button>`,
-    'fa-tags','#FF8A65','max-w-lg');
-  const c=$('#t_color'),h=$('#t_hex'); if(c&&h){c.oninput=()=>h.value=c.value;h.oninput=()=>{if(/^#[0-9a-f]{6}$/i.test(h.value))c.value=h.value}}
-}
-function pickColor(p,c){$('#'+p+'_color').value=c;$('#'+p+'_hex').value=c}
-async function typeSave(id){
-  const name=$('#t_name').value.trim();
-  if(!name) return toast('warning','กรุณากรอกชื่อประเภทเอกสาร');
-  showLoad(); await sleep(500);
-  const T=DB.types(), color=$('#t_color').value;
-  if(id){const i=T.findIndex(x=>x.id===id);T[i]={...T[i],name,color}} else T.push({id:uid(),name,color});
-  DB.saveTypes(T); hideLoad(); closeModal(); toast('success','บันทึกข้อมูลเรียบร้อย'); viewTypes();
-}
-function typeDel(id){
-  const used=DB.docs().filter(d=>d.typeId===id).length;
-  confirmDelete(used?`มีเอกสาร ${used} รายการใช้ประเภทนี้อยู่ หากลบ ข้อมูลประเภทของเอกสารจะว่าง`:'ต้องการลบประเภทเอกสารนี้ใช่หรือไม่')
-  .then(async r=>{ if(!r.isConfirmed)return; showLoad(); await sleep(450);
-    DB.saveTypes(DB.types().filter(x=>x.id!==id)); hideLoad(); toast('success','ลบข้อมูลเรียบร้อย'); viewTypes(); });
-}
+                <!-- Stats Overview -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-gradient-to-r from-primary to-secondary text-white rounded-xl shadow-md p-6 relative overflow-hidden">
+                        <i class="fas fa-folder-open absolute -right-4 -bottom-4 text-white/20 text-7xl"></i>
+                        <h3 class="text-white/80 text-sm font-medium">เอกสารทั้งหมด</h3>
+                        <p class="text-4xl font-bold mt-1">${totalDocs} <span class="text-lg font-normal">ฉบับ</span></p>
+                    </div>
+                </div>
 
-/* ============================================================
-   FISCAL YEARS
-============================================================ */
-function viewYears(){
-  const Y=DB.years(),docs=DB.docs();
-  $('#pageContent').innerHTML=`
-  <div class="flex items-center gap-2 mb-4">
-    <span class="text-[13px] text-slate-400">ทั้งหมด <b class="text-brand">${Y.length}</b> ปีงบประมาณ</span>
-    <button onclick="yearForm()" class="btn btn-p ml-auto shadow-soft"><i class="fa-solid fa-plus"></i> เพิ่มปีงบประมาณ</button>
-  </div>
-  <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
-    ${Y.map(y=>`
-    <div class="bg-white rounded-[1.4rem] p-4 shadow-card border border-slate-50">
-      <div class="flex items-center gap-3">
-        <span class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 text-white" style="background:linear-gradient(145deg,${y.color},${hex2rgba(y.color,.7)})"><i class="fa-solid fa-calendar-days text-[17px]"></i></span>
-        <div class="min-w-0 flex-1">
-          <p class="font-extrabold text-slate-700 text-[16px]">ปี ${esc(y.year)}</p>
-          <p class="text-[11.5px] text-slate-400">${docs.filter(d=>d.yearId===y.id).length} เอกสาร</p>
-        </div>
-      </div>
-      <div class="flex gap-1.5 mt-3 pt-3 border-t border-slate-50 justify-end">
-        <button onclick="yearForm('${y.id}')" class="ico-btn bg-amber/15 text-orange hover:bg-orange hover:text-white"><i class="fa-solid fa-pen"></i></button>
-        <button onclick="yearDel('${y.id}')" class="ico-btn bg-rose/10 text-rose hover:bg-rose hover:text-white"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    </div>`).join('')||'<p class="text-slate-400">ยังไม่มีข้อมูล</p>'}
-  </div>`;
-}
-function yearForm(id){
-  const y=id?DB.years().find(x=>x.id===id):null;
-  const color=y?.color||PALETTE[DB.years().length%PALETTE.length];
-  openModal(id?'แก้ไขปีงบประมาณ':'เพิ่มปีงบประมาณ',`
-    <div class="space-y-4">
-      <div><label class="lbl">ปีงบประมาณ</label><input id="y_year" class="inp" value="${esc(y?.year||'')}" placeholder="เช่น 2568"></div>
-      <div><label class="lbl">สีประจำปีงบประมาณ</label>
-        <div class="flex items-center gap-3">
-          <input id="y_color" type="color" value="${color}">
-          <input id="y_hex" class="inp font-mono w-32" value="${color}">
-          <div class="flex flex-wrap gap-1.5">${PALETTE.map(c=>`<button onclick="pickColor('y','${c}')" class="w-6 h-6 rounded-lg ring-1 ring-black/5" style="background:${c}"></button>`).join('')}</div>
-        </div></div>
-    </div>`,
-    `<button onclick="closeModal()" class="btn btn-g">ยกเลิก</button>
-     <button onclick="yearSave('${id||''}')" class="btn btn-p"><i class="fa-solid fa-floppy-disk"></i> บันทึก</button>`,
-    'fa-calendar-days','#0288D1','max-w-lg');
-  const c=$('#y_color'),h=$('#y_hex'); c.oninput=()=>h.value=c.value; h.oninput=()=>{if(/^#[0-9a-f]{6}$/i.test(h.value))c.value=h.value};
-}
-async function yearSave(id){
-  const year=$('#y_year').value.trim();
-  if(!year) return toast('warning','กรุณากรอกปีงบประมาณ');
-  showLoad(); await sleep(500);
-  const Y=DB.years(),color=$('#y_color').value;
-  if(id){const i=Y.findIndex(x=>x.id===id);Y[i]={...Y[i],year,color}} else Y.push({id:uid(),year,color});
-  DB.saveYears(Y); hideLoad(); closeModal(); toast('success','บันทึกข้อมูลเรียบร้อย'); viewYears();
-}
-function yearDel(id){
-  const used=DB.docs().filter(d=>d.yearId===id).length;
-  confirmDelete(used?`มีเอกสาร ${used} รายการใช้ปีงบประมาณนี้อยู่`:'ต้องการลบปีงบประมาณนี้ใช่หรือไม่')
-  .then(async r=>{ if(!r.isConfirmed)return; showLoad(); await sleep(450);
-    DB.saveYears(DB.years().filter(x=>x.id!==id)); hideLoad(); toast('success','ลบข้อมูลเรียบร้อย'); viewYears(); });
-}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Progress Cards -->
+                    <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        ${typeCardsHTML || '<div class="col-span-full text-center text-gray-400 py-4">ไม่มีข้อมูลประเภทเอกสาร</div>'}
+                    </div>
+                    
+                    <!-- Chart -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 h-64 flex flex-col">
+                        <h3 class="text-sm font-bold text-gray-700 mb-2">สัดส่วนเอกสาร</h3>
+                        <div class="flex-1 relative w-full flex justify-center">
+                            <canvas id="typeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
 
-/* ============================================================
-   USERS (admin)
-============================================================ */
-function viewUsers(){
-  const U=DB.users();
-  $('#pageContent').innerHTML=`
-  <div class="bg-white rounded-[1.5rem] p-4 shadow-card border border-slate-50 mb-4 flex flex-wrap items-center gap-2">
-    <span class="text-[13px] text-slate-400 mr-auto">ผู้ใช้งานทั้งหมด <b class="text-brand">${U.length}</b> คน</span>
-    <button onclick="xlsxTemplate()" class="btn btn-g"><i class="fa-solid fa-file-arrow-down"></i> Template</button>
-    <button onclick="$('#xlsIn').click()" class="btn btn-g"><i class="fa-solid fa-file-import text-lime"></i> นำเข้า Excel</button>
-    <button onclick="xlsxExport()" class="btn btn-g"><i class="fa-solid fa-file-excel text-mint"></i> ส่งออก Excel</button>
-    <button onclick="userForm()" class="btn btn-p shadow-soft"><i class="fa-solid fa-user-plus"></i> เพิ่มผู้ใช้</button>
-    <input id="xlsIn" type="file" accept=".xlsx,.xls,.csv" class="hidden" onchange="xlsxImport(this)">
-  </div>
-  <div class="bg-white rounded-[1.5rem] shadow-card border border-slate-50 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="tb w-full min-w-[640px]">
-        <thead class="bg-brand-50/70"><tr>
-          <th class="px-4 py-3.5 text-left">ชื่อผู้ใช้</th><th class="px-4 py-3.5 text-left">ชื่อ-นามสกุล</th>
-          <th class="px-4 py-3.5 text-left">รหัสผ่าน</th><th class="px-4 py-3.5 text-left">บทบาท</th>
-          <th class="px-4 py-3.5 text-center w-[110px]">จัดการ</th></tr></thead>
-        <tbody class="divide-y divide-slate-50">
-        ${U.map(u=>`
-          <tr class="row-h transition">
-            <td class="px-4 py-3.5"><div class="flex items-center gap-2.5">
-              <span class="w-9 h-9 rounded-full text-white text-[13px] font-bold flex items-center justify-center" style="background:linear-gradient(135deg,${u.role==='admin'?'#4A2C6D,#0288D1':'#0C7C82,#35B4B0'})">${esc((u.fullname||'U').replace(/^(นาย|นาง|นางสาว)/,'').trim().charAt(0))}</span>
-              <span class="font-bold text-slate-700 text-[13.5px]">${esc(u.username)}</span></div></td>
-            <td class="px-4 py-3.5 text-[13.5px]">${esc(u.fullname)}</td>
-            <td class="px-4 py-3.5 font-mono text-[12.5px] text-slate-400">${'•'.repeat(Math.min(8,(u.password||'').length))}</td>
-            <td class="px-4 py-3.5">${badge(u.role==='admin'?'ผู้ดูแลระบบ':'ครู',u.role==='admin'?'#4A2C6D':'#0C7C82')}</td>
-            <td class="px-4 py-3.5"><div class="flex gap-1.5 justify-center">
-              <button onclick="userForm('${u.id}')" class="ico-btn bg-amber/15 text-orange hover:bg-orange hover:text-white"><i class="fa-solid fa-pen"></i></button>
-              <button onclick="userDel('${u.id}')" class="ico-btn bg-rose/10 text-rose hover:bg-rose hover:text-white"><i class="fa-solid fa-trash"></i></button>
-            </div></td>
-          </tr>`).join('')}
-        </tbody></table></div></div>`;
-}
-function userForm(id){
-  const u=id?DB.users().find(x=>x.id===id):null;
-  openModal(id?'แก้ไขผู้ใช้งาน':'เพิ่มผู้ใช้งาน',`
-    <div class="space-y-4">
-      <div class="grid md:grid-cols-2 gap-4">
-        <div><label class="lbl">ชื่อผู้ใช้ (Username)</label><input id="u_user" class="inp" value="${esc(u?.username||'')}"></div>
-        <div><label class="lbl">รหัสผ่าน (Password)</label><input id="u_pass" class="inp" value="${esc(u?.password||'')}"></div>
-      </div>
-      <div><label class="lbl">ชื่อ-นามสกุล</label><input id="u_name" class="inp" value="${esc(u?.fullname||'')}"></div>
-      <div><label class="lbl">บทบาท</label>
-        <div class="grid grid-cols-2 gap-3">
-          ${[['admin','ผู้ดูแลระบบ','fa-user-shield','#4A2C6D'],['teacher','ครู','fa-chalkboard-user','#0C7C82']].map(([v,l,i,c])=>`
-          <label class="cursor-pointer">
-            <input type="radio" name="u_role" value="${v}" class="peer hidden" ${(u?.role||'teacher')===v?'checked':''}>
-            <div class="flex items-center gap-2.5 p-3 rounded-2xl border-2 border-slate-100 peer-checked:border-brand peer-checked:bg-brand-50 transition">
-              <span class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:${hex2rgba(c,.14)};color:${c}"><i class="fa-solid ${i}"></i></span>
-              <span class="font-bold text-[13.5px] text-slate-600">${l}</span>
-            </div></label>`).join('')}
-        </div></div>
-    </div>`,
-    `<button onclick="closeModal()" class="btn btn-g">ยกเลิก</button>
-     <button onclick="userSave('${id||''}')" class="btn btn-p"><i class="fa-solid fa-floppy-disk"></i> บันทึก</button>`,
-    'fa-users-gear','#4A2C6D','max-w-2xl');
-}
-async function userSave(id){
-  const username=$('#u_user').value.trim(),password=$('#u_pass').value.trim(),fullname=$('#u_name').value.trim(),
-        role=document.querySelector('input[name=u_role]:checked').value;
-  if(!username||!password||!fullname) return toast('warning','กรุณากรอกข้อมูลให้ครบถ้วน');
-  const U=DB.users();
-  if(U.some(x=>x.username===username&&x.id!==id)) return toast('error','ชื่อผู้ใช้นี้มีอยู่แล้ว');
-  showLoad(); await sleep(500);
-  if(id){const i=U.findIndex(x=>x.id===id);U[i]={...U[i],username,password,fullname,role}} else U.push({id:uid(),username,password,fullname,role});
-  DB.saveUsers(U); hideLoad(); closeModal(); toast('success','บันทึกข้อมูลเรียบร้อย'); viewUsers();
-}
-function userDel(id){
-  if(id===ME.id) return toast('error','ไม่สามารถลบบัญชีที่กำลังใช้งานอยู่');
-  confirmDelete('ต้องการลบผู้ใช้งานรายนี้ใช่หรือไม่').then(async r=>{
-    if(!r.isConfirmed)return; showLoad(); await sleep(450);
-    DB.saveUsers(DB.users().filter(x=>x.id!==id)); hideLoad(); toast('success','ลบข้อมูลเรียบร้อย'); viewUsers(); });
-}
-/* ----- Excel (UTF-8 Thai) ----- */
-const XH=['username','password','ชื่อ-นามสกุล','บทบาท'];
-function xlsxTemplate(){
-  const ws=XLSX.utils.aoa_to_sheet([XH,['somchai','123456','นายสมชาย ใจดี','ครู'],['admin2','123456','นางสาวสมหญิง เก่งงาน','ผู้ดูแลระบบ']]);
-  ws['!cols']=[{wch:18},{wch:14},{wch:30},{wch:16}];
-  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Template');
-  XLSX.writeFile(wb,'template_users.xlsx',{bookType:'xlsx',type:'binary'}); toast('success','ดาวน์โหลด Template แล้ว');
-}
-function xlsxExport(){
-  const data=[XH,...DB.users().map(u=>[u.username,u.password,u.fullname,u.role==='admin'?'ผู้ดูแลระบบ':'ครู'])];
-  const ws=XLSX.utils.aoa_to_sheet(data); ws['!cols']=[{wch:18},{wch:14},{wch:30},{wch:16}];
-  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'ผู้ใช้งาน');
-  XLSX.writeFile(wb,`users_${new Date().toISOString().slice(0,10)}.xlsx`); toast('success','ส่งออกไฟล์ Excel แล้ว');
-}
-function xlsxImport(el){
-  const f=el.files[0]; if(!f)return; showLoad();
-  const r=new FileReader();
-  r.onload=e=>{
-    try{
-      const wb=XLSX.read(e.target.result,{type:'array'});
-      const rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:''});
-      const U=DB.users(); let add=0,upd=0;
-      rows.forEach(r=>{
-        const username=String(r.username||r.Username||'').trim(); if(!username)return;
-        const password=String(r.password||r.Password||'123456').trim();
-        const fullname=String(r['ชื่อ-นามสกุล']||r.fullname||'').trim();
-        const roleTxt=String(r['บทบาท']||r.role||'ครู').trim();
-        const role=/admin|ผู้ดูแล/i.test(roleTxt)?'admin':'teacher';
-        const i=U.findIndex(x=>x.username===username);
-        if(i>-1){U[i]={...U[i],password,fullname:fullname||U[i].fullname,role};upd++} else {U.push({id:uid(),username,password,fullname,role});add++}
-      });
-      DB.saveUsers(U); hideLoad(); el.value='';
-      Swal.fire({icon:'success',title:'นำเข้าข้อมูลสำเร็จ',html:`เพิ่มใหม่ <b>${add}</b> รายการ • อัปเดต <b>${upd}</b> รายการ`,confirmButtonColor:'#0C7C82'});
-      viewUsers();
-    }catch(err){hideLoad();Swal.fire({icon:'error',title:'นำเข้าไม่สำเร็จ',text:'รูปแบบไฟล์ไม่ถูกต้อง',confirmButtonColor:'#0C7C82'})}
-  };
-  r.readAsArrayBuffer(f);
-}
+        function initDashboardCharts() {
+            const ctx = document.getElementById('typeChart');
+            if(!ctx) return;
+            
+            const typeData = state.types.map(t => {
+                return { label: t.name, data: state.documents.filter(d => d.typeId === t.id).length, color: t.color }
+            }).filter(d => d.data > 0);
 
-/* ============================================================
-   SETTINGS (admin)
-============================================================ */
-let TMP_LOGO=null;
-function viewSetting(){
-  const s=DB.settings(); TMP_LOGO=s.logo||DEF_LOGO;
-  $('#pageContent').innerHTML=`
-  <div class="grid lg:grid-cols-3 gap-4">
-    <div class="lg:col-span-2 bg-white rounded-[1.5rem] p-5 md:p-6 shadow-card border border-slate-50">
-      <div class="flex items-center gap-2 mb-5"><span class="w-1.5 h-5 rounded-full bg-brand"></span><h3 class="font-extrabold text-slate-800">ข้อมูลหน่วยงาน</h3></div>
-      <div class="space-y-4">
-        <div><label class="lbl">ชื่อโรงเรียน</label><input id="s_school" class="inp" value="${esc(s.schoolName||'')}"></div>
-        <div><label class="lbl">ชื่อสังกัด</label><input id="s_dept" class="inp" value="${esc(s.dept||'')}"></div>
-        <div><label class="lbl">โลโก้โรงเรียน <span class="text-slate-300 font-normal">(ไม่บังคับ)</span></label>
-          <div id="ldz" class="border-2 border-dashed border-slate-200 rounded-2xl p-5 text-center bg-slate-50/60 cursor-pointer transition">
-            <i class="fa-solid fa-image text-2xl text-brand-light mb-1.5"></i>
-            <p class="text-[13px] font-bold text-slate-600">คลิกหรือลากไฟล์รูปโลโก้มาวาง</p>
-            <input id="s_logo" type="file" accept="image/*" class="hidden">
-          </div></div>
-        <button onclick="saveSetting()" class="btn btn-p w-full justify-center py-3 shadow-soft"><i class="fa-solid fa-floppy-disk"></i> บันทึกการตั้งค่า</button>
-      </div>
-    </div>
-    <div class="bg-white rounded-[1.5rem] p-5 shadow-card border border-slate-50">
-      <div class="flex items-center gap-2 mb-4"><span class="w-1.5 h-5 rounded-full bg-brand-light"></span><h3 class="font-extrabold text-slate-800">ตัวอย่าง (Preview)</h3></div>
-      <div class="rounded-2xl p-5 text-white text-center" style="background:linear-gradient(145deg,#0C7C82,#35B4B0)">
-        <div class="w-24 h-24 mx-auto rounded-3xl bg-white/15 ring-4 ring-white/25 overflow-hidden flex items-center justify-center mb-3">
-          <img id="pvLogo" src="${s.logo||DEF_LOGO}" class="w-full h-full object-contain p-1.5">
-        </div>
-        <p class="font-extrabold">ระบบจัดเก็บเอกสารราชการ</p>
-        <p id="pvSchool" class="text-[14px] font-bold mt-1">${esc(s.schoolName||'')}</p>
-        <p id="pvDept" class="text-[11.5px] text-white/80">${esc(s.dept||'')}</p>
-      </div>
-    </div>
-  </div>`;
-  const dz=$('#ldz'),fi=$('#s_logo');
-  dz.onclick=()=>fi.click();
-  ['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('dz-over')}));
-  ['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('dz-over')}));
-  dz.addEventListener('drop',ev=>readLogo(ev.dataTransfer.files[0]));
-  fi.onchange=e=>readLogo(e.target.files[0]);
-  $('#s_school').oninput=e=>$('#pvSchool').textContent=e.target.value;
-  $('#s_dept').oninput=e=>$('#pvDept').textContent=e.target.value;
-}
-function readLogo(f){ if(!f||!f.type.startsWith('image'))return; const r=new FileReader(); r.onload=()=>{TMP_LOGO=r.result;$('#pvLogo').src=r.result}; r.readAsDataURL(f); }
-async function saveSetting(){
-  showLoad(); await sleep(600);
-  DB.saveSettings({schoolName:$('#s_school').value.trim(),dept:$('#s_dept').value.trim(),logo:TMP_LOGO});
-  const s=DB.settings(); $('#sbLogo').src=s.logo; $('#sbSchool').textContent=s.schoolName; $('#ftSchool').textContent=s.schoolName;
-  hideLoad(); Swal.fire({icon:'success',title:'บันทึกสำเร็จ',text:'อัปเดตข้อมูลระบบเรียบร้อยแล้ว',confirmButtonColor:'#0C7C82'});
-}
+            if(state.charts.typeChart) state.charts.typeChart.destroy();
 
-/* ============================================================
-   PROFILE (teacher)
-============================================================ */
-function viewProfile(){
-  $('#pageContent').innerHTML=`
-  <div class="max-w-2xl mx-auto bg-white rounded-[1.5rem] shadow-card border border-slate-50 overflow-hidden">
-    <div class="p-6 text-center text-white" style="background:linear-gradient(145deg,#0C7C82,#35B4B0)">
-      <div class="w-20 h-20 mx-auto rounded-full bg-white/20 ring-4 ring-white/25 flex items-center justify-center text-3xl font-extrabold mb-2">
-        ${esc((ME.fullname||'U').replace(/^(นาย|นาง|นางสาว)/,'').trim().charAt(0))}</div>
-      <p class="font-extrabold text-[18px]">${esc(ME.fullname)}</p>
-      <p class="text-[12px] text-white/80">บทบาท : ${ME.role==='admin'?'ผู้ดูแลระบบ':'ครู'}</p>
-    </div>
-    <div class="p-5 md:p-6 space-y-4">
-      <div><label class="lbl">ชื่อผู้ใช้ (Username)</label><input id="p_user" class="inp" value="${esc(ME.username)}"></div>
-      <div><label class="lbl">รหัสผ่าน (Password)</label>
-        <div class="relative"><input id="p_pass" type="password" class="inp pr-10" value="${esc(ME.password)}">
-        <button onclick="const i=$('#p_pass');i.type=i.type==='password'?'text':'password'" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand"><i class="fa-solid fa-eye"></i></button></div></div>
-      <div><label class="lbl">ชื่อ-นามสกุล</label><input id="p_name" class="inp" value="${esc(ME.fullname)}"></div>
-      <button onclick="saveProfile()" class="btn btn-p w-full justify-center py-3 shadow-soft"><i class="fa-solid fa-floppy-disk"></i> อัปเดตข้อมูลส่วนตัว</button>
-    </div>
-  </div>`;
-}
-async function saveProfile(){
-  const username=$('#p_user').value.trim(),password=$('#p_pass').value.trim(),fullname=$('#p_name').value.trim();
-  if(!username||!password||!fullname) return toast('warning','กรุณากรอกข้อมูลให้ครบถ้วน');
-  const U=DB.users();
-  if(U.some(x=>x.username===username&&x.id!==ME.id)) return toast('error','ชื่อผู้ใช้นี้มีอยู่แล้ว');
-  showLoad(); await sleep(550);
-  const i=U.findIndex(x=>x.id===ME.id); U[i]={...U[i],username,password,fullname}; DB.saveUsers(U); ME=U[i];
-  $('#sbName').textContent=fullname; $('#sbAvatar').textContent=fullname.replace(/^(นาย|นาง|นางสาว)/,'').trim().charAt(0);
-  hideLoad(); Swal.fire({icon:'success',title:'อัปเดตสำเร็จ',text:'บันทึกข้อมูลส่วนตัวเรียบร้อยแล้ว',confirmButtonColor:'#0C7C82'}); viewProfile();
-}
+            state.charts.typeChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: typeData.map(d => d.label),
+                    datasets: [{
+                        data: typeData.map(d => d.data),
+                        backgroundColor: typeData.map(d => d.color),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Sarabun' } } } },
+                    cutout: '70%'
+                }
+            });
+        }
 
-/* ============================================================
-   BOOT
-============================================================ */
-seed();
-window.addEventListener('DOMContentLoaded',()=>{ store.get(K.a,null)?enterApp():showLogin(); });
-if(document.readyState!=='loading'){ store.get(K.a,null)?enterApp():showLogin(); }
-window.addEventListener('resize',()=>{ if(window.innerWidth>=768) toggleSidebar(false); });
-</script>
+        function renderSettings() {
+            return `
+                <div class="mb-6 flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">ตั้งค่าระบบ</h2>
+                        <p class="text-sm text-gray-500">จัดการข้อมูลพื้นฐานของหน่วยงาน</p>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-2xl">
+                    <form onsubmit="saveSettings(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อโรงเรียน / หน่วยงาน</label>
+                            <input type="text" id="set-school" value="${state.settings.schoolName}" required class="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ชื่อสังกัด</label>
+                            <input type="text" id="set-dept" value="${state.settings.department}" required class="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">อัพโหลดรูปโลโก้ (URL หรือ Base64)</label>
+                            <div class="flex items-center space-x-4">
+                                <img src="${state.settings.logo}" id="logo-preview" class="w-16 h-16 rounded object-cover border bg-gray-50" onerror="this.src='https://placehold.co/100x100?text=LOGO'">
+                                <input type="text" id="set-logo" value="${state.settings.logo}" oninput="document.getElementById('logo-preview').src=this.value" class="flex-1 px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary" placeholder="https://...">
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">* วาง URL ของรูปภาพ</p>
+                        </div>
+                        <div class="pt-4">
+                            <button type="submit" class="bg-primary hover:bg-[#095e63] text-white px-6 py-2 rounded-lg shadow transition">
+                                <i class="fas fa-save mr-2"></i> บันทึกการตั้งค่า
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            `;
+        }
+
+        function saveSettings(e) {
+            e.preventDefault();
+            showLoading();
+            setTimeout(() => {
+                state.settings.schoolName = document.getElementById('set-school').value;
+                state.settings.department = document.getElementById('set-dept').value;
+                state.settings.logo = document.getElementById('set-logo').value;
+                saveMockData();
+                hideLoading();
+                Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1500, showConfirmButton: false });
+                render(); // refresh to update top bar
+            }, 500);
+        }
+
+        function renderUsers() {
+            let trs = state.users.map(u => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50 transition">
+                    <td class="py-3 px-4">${u.username}</td>
+                    <td class="py-3 px-4">${u.name}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2 py-1 text-xs rounded-full ${u.role==='admin' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}">
+                            ${u.role==='admin' ? 'ผู้ดูแลระบบ' : 'ครู'}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openUserModal('${u.id}')" class="text-blue-500 hover:text-blue-700 mx-1 p-1"><i class="fas fa-edit"></i></button>
+                        ${u.username !== 'admin' ? `<button onclick="deleteData('users', '${u.id}')" class="text-red-500 hover:text-red-700 mx-1 p-1"><i class="fas fa-trash"></i></button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">จัดการผู้ใช้งาน</h2>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                        <input type="file" id="excel-import" class="hidden" accept=".xlsx, .xls" onchange="importExcelUser(event)">
+                        <button onclick="document.getElementById('excel-import').click()" class="bg-accent2 hover:bg-green-600 text-white px-3 py-2 rounded-lg text-sm transition shadow"><i class="fas fa-file-import mr-1"></i> นำเข้า</button>
+                        <button onclick="exportExcelUser()" class="bg-accent3 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg text-sm transition shadow"><i class="fas fa-file-export mr-1"></i> ส่งออก</button>
+                        <button onclick="openUserModal()" class="bg-primary hover:bg-[#095e63] text-white px-4 py-2 rounded-lg text-sm transition shadow flex-1 sm:flex-none"><i class="fas fa-plus mr-1"></i> เพิ่มผู้ใช้งาน</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse whitespace-nowrap">
+                            <thead>
+                                <tr class="bg-gray-50 text-gray-600 text-sm border-b">
+                                    <th class="py-3 px-4 font-semibold">Username</th>
+                                    <th class="py-3 px-4 font-semibold">ชื่อ-สกุล</th>
+                                    <th class="py-3 px-4 font-semibold">บทบาท</th>
+                                    <th class="py-3 px-4 font-semibold text-right">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody>${trs || '<tr><td colspan="4" class="text-center py-4 text-gray-500">ไม่มีข้อมูล</td></tr>'}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openUserModal(id = null) {
+            let u = id ? state.users.find(x => x.id === id) : { id: Date.now().toString(), username: '', password: '', name: '', role: 'teacher' };
+            const modalHTML = `
+                <div id="u-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 fade-in">
+                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+                        <div class="bg-primary p-4 text-white flex justify-between items-center">
+                            <h3 class="font-bold text-lg">${id ? 'แก้ไขผู้ใช้งาน' : 'เพิ่มผู้ใช้งาน'}</h3>
+                            <button onclick="closeModal('u-modal')" class="text-white hover:text-gray-200"><i class="fas fa-times text-xl"></i></button>
+                        </div>
+                        <form onsubmit="saveUserForm(event, '${id}')" class="p-6 space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Username</label>
+                                <input type="text" id="u-user" value="${u.username}" ${id && u.username==='admin' ? 'readonly' : 'required'} class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">Password</label>
+                                <input type="text" id="u-pass" value="${u.password}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">ชื่อ-สกุล</label>
+                                <input type="text" id="u-name" value="${u.name}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-2">บทบาท</label>
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center"><input type="radio" name="u-role" value="teacher" ${u.role==='teacher' ? 'checked' : ''} class="mr-2 text-primary focus:ring-primary"> ครู</label>
+                                    <label class="flex items-center"><input type="radio" name="u-role" value="admin" ${u.role==='admin' ? 'checked' : ''} ${id && u.username==='admin'?'disabled':''} class="mr-2 text-primary focus:ring-primary"> ผู้ดูแลระบบ</label>
+                                </div>
+                            </div>
+                            <div class="pt-4 flex justify-end space-x-2">
+                                <button type="button" onclick="closeModal('u-modal')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">ยกเลิก</button>
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-[#095e63]">บันทึก</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').innerHTML = modalHTML;
+        }
+
+        function saveUserForm(e, isEdit) {
+            e.preventDefault();
+            const id = isEdit !== 'null' ? isEdit : Date.now().toString();
+            const user = {
+                id: id,
+                username: document.getElementById('u-user').value,
+                password: document.getElementById('u-pass').value,
+                name: document.getElementById('u-name').value,
+                role: document.querySelector('input[name="u-role"]:checked').value || 'teacher'
+            };
+            
+            if(isEdit !== 'null') {
+                const idx = state.users.findIndex(x => x.id === id);
+                state.users[idx] = user;
+            } else {
+                state.users.push(user);
+            }
+            saveMockData();
+            closeModal('u-modal');
+            render();
+            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1500, showConfirmButton: false });
+        }
+
+        function exportExcelUser() {
+            const ws = XLSX.utils.json_to_sheet(state.users.map(u => ({
+                Username: u.username, Password: u.password, Name: u.name, Role: u.role
+            })));
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Users");
+            XLSX.writeFile(wb, "Users_Template.xlsx");
+        }
+
+        function importExcelUser(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const excelRows = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    let imported = 0;
+                    excelRows.forEach(row => {
+                        if(row.Username && row.Name) {
+                            state.users.push({
+                                id: Date.now().toString() + Math.random(),
+                                username: row.Username.toString(),
+                                password: row.Password ? row.Password.toString() : '1234',
+                                name: row.Name,
+                                role: row.Role === 'admin' ? 'admin' : 'teacher'
+                            });
+                            imported++;
+                        }
+                    });
+                    saveMockData();
+                    render();
+                    Swal.fire({ icon: 'success', title: 'นำเข้าสำเร็จ', text: `นำเข้า ${imported} รายการ` });
+                } catch(err) {
+                    Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: 'รูปแบบไฟล์ไม่ถูกต้อง' });
+                }
+                e.target.value = ''; // reset
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function deleteData(collection, id) {
+            Swal.fire({
+                title: 'ยืนยันการลบ?', text: "ข้อมูลนี้จะถูกลบอย่างถาวร!", icon: 'warning',
+                showCancelButton: true, confirmButtonColor: '#EF5350', cancelButtonColor: '#9CA3AF',
+                confirmButtonText: 'ลบข้อมูล', cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    state[collection] = state[collection].filter(x => x.id !== id);
+                    saveMockData();
+                    render();
+                    Swal.fire({ icon: 'success', title: 'ลบสำเร็จ', timer: 1000, showConfirmButton: false });
+                }
+            });
+        }
+
+        function closeModal(id) { document.getElementById(id).remove(); }
+
+        function renderYears() { return renderSimpleMaster('years', 'ปีงบประมาณ', 'year', 'fa-calendar-alt'); }
+        function renderDocTypes() { return renderSimpleMaster('types', 'ประเภทเอกสาร', 'name', 'fa-tags'); }
+
+        function renderSimpleMaster(collection, title, field, icon) {
+            let trs = state[collection].map(item => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50">
+                    <td class="py-3 px-4 flex items-center">
+                        <div class="w-4 h-4 rounded-full mr-3 shadow-sm" style="background-color: ${item.color || '#ccc'}"></div>
+                        ${item[field]}
+                    </td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="openMasterModal('${collection}', '${item.id}', '${field}')" class="text-blue-500 hover:text-blue-700 mx-2"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteData('${collection}', '${item.id}')" class="text-red-500 hover:text-red-700 mx-2"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+
+            return `
+                <div class="mb-6 flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">${title}</h2>
+                    <button onclick="openMasterModal('${collection}', null, '${field}')" class="bg-primary hover:bg-[#095e63] text-white px-4 py-2 rounded-lg text-sm transition shadow"><i class="fas fa-plus mr-1"></i> เพิ่ม</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-3xl">
+                    <table class="w-full text-left border-collapse">
+                        <thead><tr class="bg-gray-50 text-gray-600 text-sm border-b"><th class="py-3 px-4 font-semibold">ชื่อ/ปี</th><th class="py-3 px-4 text-right font-semibold">จัดการ</th></tr></thead>
+                        <tbody>${trs || '<tr><td colspan="2" class="text-center py-4 text-gray-500">ไม่มีข้อมูล</td></tr>'}</tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function openMasterModal(col, id, field) {
+            let item = id ? state[col].find(x => x.id === id) : { id: Date.now().toString(), [field]: '', color: '#0C7C82' };
+            const mId = 'm-modal';
+            const modalHTML = `
+                <div id="${mId}" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 fade-in">
+                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden">
+                        <div class="bg-primary p-4 text-white flex justify-between items-center">
+                            <h3 class="font-bold text-lg">${id ? 'แก้ไข' : 'เพิ่ม'}</h3>
+                            <button onclick="closeModal('${mId}')" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+                        </div>
+                        <form onsubmit="saveMasterForm(event, '${col}', '${id}', '${field}')" class="p-6 space-y-4">
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">ระบุข้อมูล</label>
+                                <input type="text" id="m-val" value="${item[field]}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">เลือกสี (Color Picker)</label>
+                                <div class="flex items-center space-x-2">
+                                    <input type="color" id="m-col" value="${item.color}" class="h-10 w-14 rounded cursor-pointer border-0 p-0">
+                                    <span class="text-xs text-gray-500">ใช้ตกแต่งป้ายกำกับ</span>
+                                </div>
+                            </div>
+                            <div class="pt-4 flex justify-end space-x-2">
+                                <button type="button" onclick="closeModal('${mId}')" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg">ยกเลิก</button>
+                                <button type="submit" class="px-4 py-2 bg-primary text-white rounded-lg">บันทึก</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').innerHTML = modalHTML;
+        }
+
+        function saveMasterForm(e, col, isEdit, field) {
+            e.preventDefault();
+            const id = isEdit !== 'null' ? isEdit : Date.now().toString();
+            const val = document.getElementById('m-val').value;
+            const color = document.getElementById('m-col').value;
+            
+            const obj = { id: id, [field]: val, color: color };
+            
+            if(isEdit !== 'null') {
+                const idx = state[col].findIndex(x => x.id === id);
+                state[col][idx] = obj;
+            } else {
+                state[col].push(obj);
+            }
+            saveMockData();
+            closeModal('m-modal');
+            render();
+            Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', timer: 1000, showConfirmButton: false });
+        }
+
+        function renderProfile() {
+            const u = state.currentUser;
+            return `
+                <div class="mb-6"><h2 class="text-2xl font-bold text-gray-800">ข้อมูลส่วนตัว</h2></div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-md">
+                    <form onsubmit="saveProfile(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">Username (อ่านอย่างเดียว)</label>
+                            <input type="text" value="${u.username}" readonly class="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">ชื่อ-สกุล</label>
+                            <input type="text" id="p-name" value="${u.name}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-700 mb-1">รหัสผ่านใหม่</label>
+                            <input type="text" id="p-pass" value="${u.password}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                        </div>
+                        <button type="submit" class="w-full mt-4 bg-primary text-white py-2 rounded-lg shadow">อัพเดทข้อมูล</button>
+                    </form>
+                </div>
+            `;
+        }
+        function saveProfile(e) {
+            e.preventDefault();
+            state.currentUser.name = document.getElementById('p-name').value;
+            state.currentUser.password = document.getElementById('p-pass').value;
+            const idx = state.users.findIndex(x => x.id === state.currentUser.id);
+            if(idx > -1) state.users[idx] = state.currentUser;
+            saveMockData();
+            Swal.fire({ icon: 'success', title: 'อัพเดทสำเร็จ', timer: 1000, showConfirmButton: false });
+            render();
+        }
+
+        
+        let docState = { viewMode: window.innerWidth < 768 ? 'grid' : 'table', search: '', typeF: '', yearF: '', filesTemp: [] };
+
+        function renderDocuments() {
+            // Apply Filters
+            let list = state.documents;
+            if(docState.search) list = list.filter(d => d.docNum.includes(docState.search) || d.title.includes(docState.search));
+            if(docState.typeF) list = list.filter(d => d.typeId === docState.typeF);
+            if(docState.yearF) list = list.filter(d => d.yearId === docState.yearF);
+
+            // Sort new first
+            list.sort((a,b) => b.id - a.id);
+
+            const isMobile = window.innerWidth < 768;
+            if(isMobile) docState.viewMode = 'grid'; // Force grid default on mobile
+
+            // Build Options
+            const typeOpts = state.types.map(t => `<option value="${t.id}" ${docState.typeF===t.id?'selected':''}>${t.name}</option>`).join('');
+            const yearOpts = state.years.map(y => `<option value="${y.id}" ${docState.yearF===y.id?'selected':''}>${y.year}</option>`).join('');
+
+            return `
+                <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div><h2 class="text-2xl font-bold text-gray-800">จัดการเอกสารราชการ</h2></div>
+                    <button onclick="openDocModal()" class="w-full md:w-auto bg-primary hover:bg-[#095e63] text-white px-4 py-2 rounded-lg text-sm shadow transition">
+                        <i class="fas fa-file-upload mr-2"></i> อัพโหลดเอกสารใหม่
+                    </button>
+                </div>
+
+                <!-- Filters & Controls -->
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6 flex flex-col md:flex-row gap-3 items-center">
+                    <div class="w-full md:w-1/3 relative">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="filter-search" value="${docState.search}" placeholder="ค้นหาเลขที่, เรื่อง..." oninput="updateDocFilter()" class="w-full pl-9 pr-3 py-2 border rounded-lg text-sm focus:ring-primary focus:border-primary">
+                    </div>
+                    <select id="filter-type" onchange="updateDocFilter()" class="w-full md:w-1/4 px-3 py-2 border rounded-lg text-sm">
+                        <option value="">ทุกประเภท</option>${typeOpts}
+                    </select>
+                    <select id="filter-year" onchange="updateDocFilter()" class="w-full md:w-1/4 px-3 py-2 border rounded-lg text-sm">
+                        <option value="">ทุกปีงบประมาณ</option>${yearOpts}
+                    </select>
+                    <div class="hidden md:flex bg-gray-100 rounded-lg p-1 ml-auto">
+                        <button onclick="changeView('table')" class="p-2 rounded ${docState.viewMode==='table'?'bg-white shadow':''} text-gray-600"><i class="fas fa-list"></i></button>
+                        <button onclick="changeView('grid')" class="p-2 rounded ${docState.viewMode==='grid'?'bg-white shadow':''} text-gray-600"><i class="fas fa-th-large"></i></button>
+                    </div>
+                </div>
+
+                <!-- Display Content -->
+                <div id="doc-container" class="${docState.viewMode === 'table' ? 'table-view-container bg-white rounded-xl shadow-sm border border-gray-100' : 'grid-view-container'}">
+                    ${docState.viewMode === 'table' ? buildDocTable(list) : buildDocGrid(list)}
+                </div>
+            `;
+        }
+
+        function updateDocFilter() {
+            docState.search = document.getElementById('filter-search').value;
+            docState.typeF = document.getElementById('filter-type').value;
+            docState.yearF = document.getElementById('filter-year').value;
+            // Debounce re-render slightly
+            if(window.filterTimeout) clearTimeout(window.filterTimeout);
+            window.filterTimeout = setTimeout(render, 300);
+        }
+
+        function changeView(mode) { docState.viewMode = mode; render(); }
+
+        function getDocTypeBadge(typeId) {
+            const t = state.types.find(x => x.id === typeId);
+            return t ? `<span class="px-2 py-0.5 text-xs rounded text-white" style="background-color:${t.color}">${t.name}</span>` : '';
+        }
+        function getYearName(yId) { return (state.years.find(x => x.id === yId) || {}).year || '-'; }
+
+        function canEdit(doc) {
+            if(state.currentUser.role === 'admin') return true;
+            return doc.owner === state.currentUser.username;
+        }
+
+        function buildDocTable(list) {
+            let trs = list.map(d => `
+                <tr class="border-b border-gray-50 hover:bg-gray-50">
+                    <td class="py-3 px-4 text-sm font-medium text-gray-700">${d.docNum || '-'}</td>
+                    <td class="py-3 px-4 text-sm text-gray-800 truncate max-w-[200px]">${d.title}</td>
+                    <td class="py-3 px-4">${getDocTypeBadge(d.typeId)}</td>
+                    <td class="py-3 px-4 text-sm">${getYearName(d.yearId)}</td>
+                    <td class="py-3 px-4 text-right whitespace-nowrap">
+                        <button onclick="viewDoc('${d.id}')" class="text-gray-500 hover:text-primary mx-1" title="ดูรายละเอียด"><i class="fas fa-eye"></i></button>
+                        ${canEdit(d) ? `
+                        <button onclick="openDocModal('${d.id}')" class="text-blue-500 hover:text-blue-700 mx-1" title="แก้ไข"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteData('documents', '${d.id}')" class="text-red-500 hover:text-red-700 mx-1" title="ลบ"><i class="fas fa-trash"></i></button>
+                        ` : '<span class="text-xs text-gray-400 mx-1"><i class="fas fa-lock"></i></span>'}
+                    </td>
+                </tr>
+            `).join('');
+
+            return `
+                <table class="w-full text-left border-collapse min-w-[700px]">
+                    <thead>
+                        <tr class="bg-gray-50 text-gray-600 text-sm border-b">
+                            <th class="py-3 px-4 font-semibold w-32">เลขที่หนังสือ</th>
+                            <th class="py-3 px-4 font-semibold">เรื่อง</th>
+                            <th class="py-3 px-4 font-semibold w-32">ประเภท</th>
+                            <th class="py-3 px-4 font-semibold w-24">ปีงบประมาณ</th>
+                            <th class="py-3 px-4 font-semibold text-right w-32">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>${trs || '<tr><td colspan="5" class="text-center py-8 text-gray-500">ไม่มีเอกสารที่ค้นหา</td></tr>'}</tbody>
+                </table>
+            `;
+        }
+
+        function buildDocGrid(list) {
+            if(list.length === 0) return `<div class="col-span-full text-center py-8 text-gray-500 bg-white rounded-xl border border-dashed">ไม่มีเอกสารที่ค้นหา</div>`;
+            return list.map(d => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 relative flex flex-col hover:shadow-md transition">
+                    <div class="flex justify-between items-start mb-2">
+                        ${getDocTypeBadge(d.typeId)}
+                        <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">ปี ${getYearName(d.yearId)}</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 text-sm line-clamp-2 mb-1" title="${d.title}">${d.title}</h3>
+                    <p class="text-xs text-gray-500 mb-4 font-mono">ที่: ${d.docNum || 'ไม่ระบุ'}</p>
+                    
+                    <div class="mt-auto pt-3 border-t flex justify-between items-center">
+                        <div class="flex -space-x-2">
+                            ${d.files && d.files.length > 0 ? `<span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full"><i class="fas fa-paperclip"></i> ${d.files.length} ไฟล์</span>` : '<span class="text-xs text-gray-400">-</span>'}
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="viewDoc('${d.id}')" class="w-8 h-8 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-primary hover:text-white transition"><i class="fas fa-eye text-sm"></i></button>
+                            ${canEdit(d) ? `
+                            <button onclick="openDocModal('${d.id}')" class="w-8 h-8 rounded-full bg-gray-50 text-blue-500 flex items-center justify-center hover:bg-blue-500 hover:text-white transition"><i class="fas fa-edit text-sm"></i></button>
+                            <button onclick="deleteData('documents', '${d.id}')" class="w-8 h-8 rounded-full bg-gray-50 text-red-500 flex items-center justify-center hover:bg-red-500 hover:text-white transition"><i class="fas fa-trash text-sm"></i></button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openDocModal(id = null) {
+            let d = id ? state.documents.find(x => x.id === id) : { id: Date.now().toString(), docNum: '', title: '', typeId: '', source: '', date: '', yearId: '', owner: state.currentUser.username, files: [] };
+            docState.filesTemp = [...(d.files || [])];
+
+            const typeOpts = state.types.map(t => `<option value="${t.id}" ${d.typeId===t.id?'selected':''}>${t.name}</option>`).join('');
+            const yearOpts = state.years.map(y => `<option value="${y.id}" ${d.yearId===y.id?'selected':''}>${y.year}</option>`).join('');
+
+            const modalHTML = `
+                <div id="d-modal" class="fixed inset-0 bg-black/50 z-50 flex justify-center p-0 md:p-4 fade-in overflow-y-auto">
+                    <div class="bg-white w-full max-w-3xl min-h-screen md:min-h-0 md:rounded-xl shadow-2xl flex flex-col">
+                        <div class="bg-primary p-4 text-white flex justify-between items-center sticky top-0 z-10 md:rounded-t-xl">
+                            <h3 class="font-bold text-lg"><i class="fas fa-file-alt mr-2"></i> ${id ? 'แก้ไขเอกสาร' : 'เพิ่มเอกสารใหม่'}</h3>
+                            <button onclick="closeModal('d-modal')" class="text-white hover:text-gray-200 p-2"><i class="fas fa-times text-xl"></i></button>
+                        </div>
+                        <form onsubmit="saveDocForm(event, '${id}')" class="p-6 flex-1 overflow-y-auto space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">เลขที่หนังสือ (Plain Text)</label>
+                                    <input type="text" id="df-num" value="${d.docNum}" class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">วันที่ออกเอกสาร</label>
+                                    <input type="date" id="df-date" value="${d.date}" class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">เรื่อง <span class="text-red-500">*</span></label>
+                                <input type="text" id="df-title" value="${d.title}" required class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">ประเภทเอกสาร</label>
+                                    <select id="df-type" class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                                        <option value="">เลือกประเภท</option>${typeOpts}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-700 mb-1">ปีงบประมาณ</label>
+                                    <select id="df-year" class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                                        <option value="">เลือกปี</option>${yearOpts}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">หน่วยงานต้นเรื่อง</label>
+                                <input type="text" id="df-source" value="${d.source}" class="w-full px-3 py-2 border rounded-lg focus:ring-primary focus:border-primary">
+                            </div>
+
+                            <!-- File Upload Zone -->
+                            <div>
+                                <label class="block text-sm text-gray-700 mb-1">ไฟล์แนบ (ลากวาง หรือ คลิก)</label>
+                                <div id="drop-zone" class="drop-zone rounded-xl p-8 text-center cursor-pointer bg-gray-50 flex flex-col items-center justify-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                                    <p class="text-sm text-gray-500">ลากไฟล์มาวางที่นี่ หรือ <span class="text-primary font-semibold">คลิกเพื่อเลือกไฟล์</span></p>
+                                    <input type="file" id="file-input" multiple class="hidden" onchange="handleFiles(this.files)">
+                                </div>
+                                <div id="file-preview" class="mt-3 space-y-2"></div>
+                            </div>
+
+                            <div class="pt-4 border-t sticky bottom-0 bg-white pb-4 flex justify-end space-x-3">
+                                <button type="button" onclick="closeModal('d-modal')" class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition">ยกเลิก</button>
+                                <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-lg font-medium shadow hover:bg-[#095e63] transition flex items-center">
+                                    <i class="fas fa-save mr-2"></i> บันทึกข้อมูล
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').innerHTML = modalHTML;
+            setupDragDrop();
+            renderFilePreview();
+        }
+
+        function setupDragDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+
+            dropZone.onclick = () => fileInput.click();
+            dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('dragover'); };
+            dropZone.ondragleave = () => dropZone.classList.remove('dragover');
+            dropZone.ondrop = (e) => {
+                e.preventDefault(); dropZone.classList.remove('dragover');
+                if(e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+            };
+        }
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                // Simulate reading file (in real app, send to GAS to upload to Drive)
+                docState.filesTemp.push({ name: file.name, size: (file.size/1024).toFixed(1) + ' KB', type: file.type });
+            });
+            renderFilePreview();
+        }
+
+        function removeFile(index) {
+            docState.filesTemp.splice(index, 1);
+            renderFilePreview();
+        }
+
+        function renderFilePreview() {
+            const container = document.getElementById('file-preview');
+            container.innerHTML = docState.filesTemp.map((f, i) => `
+                <div class="flex items-center justify-between bg-white border border-gray-200 p-2 rounded-lg shadow-sm">
+                    <div class="flex items-center overflow-hidden">
+                        <i class="fas fa-file-pdf text-red-500 mr-2 text-lg"></i>
+                        <div class="truncate text-sm text-gray-700 w-48 md:w-auto">${f.name}</div>
+                        <div class="text-xs text-gray-400 ml-2 hidden md:block">(${f.size})</div>
+                    </div>
+                    <button type="button" onclick="removeFile(${i})" class="text-red-400 hover:text-red-600 p-1"><i class="fas fa-times"></i></button>
+                </div>
+            `).join('');
+        }
+
+        function saveDocForm(e, isEdit) {
+            e.preventDefault();
+            const id = isEdit !== 'null' ? isEdit : Date.now().toString();
+            const doc = {
+                id: id,
+                docNum: document.getElementById('df-num').value,
+                title: document.getElementById('df-title').value,
+                date: document.getElementById('df-date').value,
+                typeId: document.getElementById('df-type').value,
+                yearId: document.getElementById('df-year').value,
+                source: document.getElementById('df-source').value,
+                owner: isEdit !== 'null' ? state.documents.find(x=>x.id===id).owner : state.currentUser.username, // keep original owner if edit
+                files: [...docState.filesTemp]
+            };
+            
+            if(isEdit !== 'null') {
+                const idx = state.documents.findIndex(x => x.id === id);
+                state.documents[idx] = doc;
+            } else {
+                state.documents.push(doc);
+            }
+            saveMockData();
+            closeModal('d-modal');
+            render();
+            Swal.fire({ icon: 'success', title: 'บันทึกเอกสารสำเร็จ', timer: 1500, showConfirmButton: false });
+        }
+
+        function viewDoc(id) {
+            const d = state.documents.find(x => x.id === id);
+            if(!d) return;
+
+            const tName = (state.types.find(x=>x.id===d.typeId)||{}).name || '-';
+            const yName = getYearName(d.yearId);
+            
+            let filesHTML = d.files && d.files.length > 0 ? d.files.map(f => `
+                <div class="flex items-center bg-gray-50 p-2 rounded border mb-2 cursor-pointer hover:bg-gray-100" onclick="Swal.fire('จำลองการเปิดไฟล์','คุณได้คลิกเปิดไฟล์ ${f.name}','info')">
+                    <i class="fas fa-file-alt text-primary mr-2"></i><span class="text-sm text-gray-700">${f.name}</span>
+                </div>`).join('') : '<p class="text-sm text-gray-500">ไม่มีไฟล์แนบ</p>';
+
+            const modalHTML = `
+                <div id="v-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 fade-in">
+                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden">
+                        <div class="bg-gradient-to-r from-primary to-secondary p-4 text-white flex justify-between items-center">
+                            <h3 class="font-bold text-lg">รายละเอียดเอกสาร</h3>
+                            <button onclick="closeModal('v-modal')" class="text-white hover:text-gray-200"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="border-b pb-3">
+                                <h4 class="text-xl font-bold text-gray-800 mb-1">${d.title}</h4>
+                                <div class="flex gap-2">
+                                    <span class="bg-primary/10 text-primary px-2 py-0.5 text-xs rounded">ประเภท: ${tName}</span>
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-0.5 text-xs rounded">ปี: ${yName}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 text-sm">
+                                <div><p class="text-gray-500 text-xs">เลขที่หนังสือ</p><p class="font-semibold">${d.docNum || '-'}</p></div>
+                                <div><p class="text-gray-500 text-xs">วันที่ออก</p><p class="font-semibold">${d.date || '-'}</p></div>
+                                <div class="col-span-2"><p class="text-gray-500 text-xs">หน่วยงานต้นเรื่อง</p><p class="font-semibold">${d.source || '-'}</p></div>
+                                <div class="col-span-2"><p class="text-gray-500 text-xs">ผู้บันทึก</p><p class="font-semibold text-gray-700">${d.owner}</p></div>
+                            </div>
+
+                            <div class="pt-4 border-t">
+                                <p class="text-gray-500 text-xs mb-2">ไฟล์แนบ</p>
+                                ${filesHTML}
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 text-right">
+                            <button onclick="closeModal('v-modal')" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100">ปิด</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').innerHTML = modalHTML;
+        }
+
+        window.onload = () => {
+            loadMockData(); // Load local storage fallback
+            // In a real scenario with GAS_API_URL provided, we would fetch data here
+            render();
+        };
+
+    </script>
 </body>
 </html>
